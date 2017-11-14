@@ -1,34 +1,59 @@
 package com.java.game.server.gameServer;
 
 import com.java.game.common.Common;
+import com.java.game.server.gameServer.manager.ChatManager;
+import com.java.game.server.gameServer.manager.GameManager;
+import com.java.game.server.gameServer.manager.LogManager;
+import com.java.game.server.gameServer.manager.RoomManager;
+import jdk.nashorn.internal.runtime.regexp.joni.encoding.CharacterType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.java.Log;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 @Data
-@Log
 public class GameServer{
 
+    // Socket
     private ServerSocket serverSocket;
     private Socket socket;
-    private int Client_port = Common.Client_port;
-    private int Server_port = Common.Server_port;
+
+    // common Info
+    private int gameServer_Port = Common.gameServer_port;
+    private int logServer_port = Common.logServer_port;
     private String ip = Common.ip;
 
+    //Manager
+    private ChatManager chatManager;
+    private GameManager gameManager;
+    private LogManager logManager;
+    private RoomManager roomManager;
+
+    private ArrayList<Thread> t;
+
     public void connect() throws Exception{
-        serverSocket = new ServerSocket(Client_port);
-        System.out.println("watit");
-        socket = serverSocket.accept();
-        System.out.println("클라이언트 연결됨");
-        System.out.println("log서버연결");
-        socket = new Socket(ip,Server_port);
-        System.out.println("로그서버연결");
+        serverSocket = new ServerSocket(gameServer_Port);
     }
+
+
+    public void start_Manager(){
+        t = new ArrayList<Thread>();
+
+    }
+
+
+
+
+
+
+
+
+
     public static void main(String[] args) throws Exception {
-        new GameServer().connect();
+       GameServer gameServer = new GameServer();
 
     }
 
