@@ -1,6 +1,11 @@
 package com.java.game.client.manager;
 
-public class GameManager implements Runnable,ClientManager {
+import java.net.Socket;
+
+public class GameManager extends Thread {
+    public GameManager(Socket socket) {
+    }
+
     public void run() {
     }
 }

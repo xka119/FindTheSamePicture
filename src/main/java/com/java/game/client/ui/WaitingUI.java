@@ -7,8 +7,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class WaitingUI extends JFrame{
+public class WaitingUI extends JFrame implements UI{
 
+    //UI
+    RoomUI[] roomUI_List;
     private static final int ROOM_SIZE = 9;
 
     //panel
@@ -30,6 +32,10 @@ public class WaitingUI extends JFrame{
     private JButton chat_send_Button;
 
     public WaitingUI(){
+        this.init();
+    }
+
+    public void init() {
         Container container = this.getContentPane();
 
         //default Layout
@@ -48,11 +54,21 @@ public class WaitingUI extends JFrame{
         chat_Panel = new JPanel();
         chat_Panel.setLayout(new BorderLayout());
 
-
         //Component Setting
         room_ButtonList = new JButton[ROOM_SIZE];
+        roomUI_List = new RoomUI[ROOM_SIZE];
+
         for(int i=0; i<ROOM_SIZE; i++){
             room_ButtonList[i] = new JButton((i+1)+"번 방"); //뒤에 텍스트는 클릭시 listener 구현필요
+            //   roomUI_List[i] = new RoomUI(room_ButtonList[i].getName()); //created
+            room_ButtonList[i].addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    WaitingUI.super.dispose();
+                    RoomUI roomUI = new RoomUI();
+                    System.out.println("입장");
+
+                }
+            });
         }
 
         user_Label = new JLabel("접속자 목록");
@@ -116,8 +132,6 @@ public class WaitingUI extends JFrame{
 
 
     }
-
-
 
     public static void main(String[] args){
         new WaitingUI();

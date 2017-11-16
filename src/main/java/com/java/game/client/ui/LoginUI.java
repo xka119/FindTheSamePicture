@@ -1,13 +1,23 @@
 package com.java.game.client.ui;
 
+import com.java.game.client.Client;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.HashMap;
 
-public class LoginUI extends JFrame{
+public class LoginUI extends JFrame implements UI{
+
+    //Client
+    private Client client;
+
+    //UI
+    private HashMap<Integer, RoomUI> roomUIMap; //1번 ~ 9번방을 hashMap으로 관리.
+    private WaitingUI waitingUI;
 
     //panel
     private JPanel main_Panel;
@@ -18,7 +28,18 @@ public class LoginUI extends JFrame{
     private JTextField name_TextField;
     private JButton start_Button;
 
-    public LoginUI(){
+    public LoginUI() throws Exception{
+        this.init();
+        client = new Client();
+        client.connect();
+        client.start();
+    }
+//    public LoginUI(Client client){
+//        this.setClient(client);
+//        this.init();
+//    }
+
+    public void init(){
         Container container = this.getContentPane();
         //default Layout
         this.setLayout(new BorderLayout());
@@ -52,7 +73,8 @@ public class LoginUI extends JFrame{
                         System.out.println("name: "+name_TextField.getText());
                         System.out.println("button Click");
                         System.out.println("Socket connection needed");
-                        RoomUI roomUI = new RoomUI();
+                        LoginUI.super.dispose();
+                        WaitingUI waitingUI = new WaitingUI();
                     }
                 }
             }
@@ -71,8 +93,10 @@ public class LoginUI extends JFrame{
                     }else{
                         System.out.println("name: "+name_TextField.getText());
                         System.out.println("button Click");
+
                         System.out.println("Socket connection needed");
-                        RoomUI roomUI = new RoomUI();
+                        LoginUI.super.dispose();
+                        WaitingUI waitingUI = new WaitingUI();
                     }
                 }
             }
@@ -95,10 +119,18 @@ public class LoginUI extends JFrame{
         this.setLocationRelativeTo(null);
         //  this.pack();
 
+
     }
 
-    public static void main(String[] args){
-        new LoginUI();
+    public Client getClient() {
+        return client;
+    }
+    public void setClient(Client client){
+        this.client = client;
+    }
+
+    public static void main(String[] args) throws Exception{
+        LoginUI loginUI = new LoginUI();
         //start
 
     }
