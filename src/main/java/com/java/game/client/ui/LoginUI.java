@@ -28,11 +28,9 @@ public class LoginUI extends JFrame implements UI{
     private JTextField name_TextField;
     private JButton start_Button;
 
-    public LoginUI() throws Exception{
+    public LoginUI(Client client) throws Exception{
+        this.client = client;
         this.init();
-        client = new Client();
-        client.connect();
-        client.start();
     }
 //    public LoginUI(Client client){
 //        this.setClient(client);
@@ -71,8 +69,16 @@ public class LoginUI extends JFrame implements UI{
                         System.out.println("닉네임을 입력해주세요");
                     }else{
                         System.out.println("name: "+name_TextField.getText());
+                        setName(name_TextField.getText());
+
                         System.out.println("button Click");
                         System.out.println("Socket connection needed");
+
+                        try {
+                            client.connect();
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
+                        }
                         LoginUI.super.dispose();
                         WaitingUI waitingUI = new WaitingUI();
                     }
@@ -93,6 +99,12 @@ public class LoginUI extends JFrame implements UI{
                     }else{
                         System.out.println("name: "+name_TextField.getText());
                         System.out.println("button Click");
+                        setName(name_TextField.getText());
+                        try {
+                            client.connect();
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
+                        }
 
                         System.out.println("Socket connection needed");
                         LoginUI.super.dispose();
@@ -122,12 +134,13 @@ public class LoginUI extends JFrame implements UI{
 
     }
 
-    public Client getClient() {
-        return client;
+    public LoginUI(){}
+
+    public void setName(String name){
+        client.setName(name);
     }
-    public void setClient(Client client){
-        this.client = client;
-    }
+
+
 
     public static void main(String[] args) throws Exception{
         LoginUI loginUI = new LoginUI();

@@ -12,11 +12,14 @@ public class ChatManager  {
     private SendManager sendManager;
     private RecvManager recvManager;
 
-    public ChatManager(Socket socket) throws Exception{
+    private LogManager logManager;
+
+    public ChatManager(Socket socket, LogManager logManager) throws Exception{
         System.out.println("Client ChatManager start");
         this.socket = socket;
-        recvManager = new RecvManager(this.socket);
-        sendManager = new SendManager(this.socket);
+        this.logManager = logManager;
+        recvManager = new RecvManager(this.socket, logManager);
+        sendManager = new SendManager(this.socket, logManager);
 
     }
 
