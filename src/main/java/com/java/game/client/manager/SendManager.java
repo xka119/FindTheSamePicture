@@ -11,7 +11,6 @@ public class SendManager extends Thread {
 
     private Socket socket;
 
-//    private DataOutputStream dos;
     private BufferedReader br;
     private PrintWriter pw;
 
@@ -20,15 +19,10 @@ public class SendManager extends Thread {
 
     public SendManager(Socket socket) throws IOException {
         this.socket = socket;
-
+        //입력
         br = new BufferedReader(new InputStreamReader(System.in));
+        //전송
         pw = new PrintWriter(socket.getOutputStream());
-//        dos = new DataOutputStream(this.socket.getOutputStream());
-
-        // Thread Start
-        this.start();
-        System.out.println("Client SendManager start");
-
     }
 
 
@@ -42,20 +36,21 @@ public class SendManager extends Thread {
          */
         //입력에 따라달라진다.
         //전송이라면 -> chat
-        //입장이라면 -> room
-        try {
-            //입력
-            text = br.readLine();
-            System.out.println("text: "+ text);
+        //입장이라면 -> room\
+        text = "";
+        while(true) {
+            try {
+                //입력
+                text = br.readLine();
+//                System.out.println("text: " + text);
 
-            pw.println(Type.CHAT);
-            pw.println(text);
-            pw.flush();
+                pw.println(text);
+                pw.flush();
 
-        } catch (IOException e) {
-            e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-
     }
 
 

@@ -2,12 +2,9 @@ package com.java.game.client.ui;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 
-public class RoomUI extends JFrame implements UI{
+public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, MouseListener{
 
     private static final int SIZE = 16;
     private String room_Name;
@@ -25,9 +22,13 @@ public class RoomUI extends JFrame implements UI{
     private ImageIcon[] gameImageIcon;
     private JTextArea game_info_TextArea;
     private JLabel game_info_Lable;
+
+    private JScrollPane chat_ScrollPane;
     private JTextArea chat_TextArea;
     private JTextField chat_TextField;
+
     private JButton chat_send_Button;
+
     private JButton start_Button;
     private JButton exit_Button;
 
@@ -90,53 +91,19 @@ public class RoomUI extends JFrame implements UI{
         game_info_TextArea.setBackground(new Color(127,127,127));
         game_info_Lable = new JLabel("game Infomation");
 
-        chat_TextArea = new JTextArea("채팅창");
+        chat_TextArea = new JTextArea();
+        chat_ScrollPane = new JScrollPane(chat_TextArea);
         chat_TextField = new JTextField("채팅을 입력하세요");
-        chat_TextField.addKeyListener(new KeyListener() {
-            public void keyTyped(KeyEvent e) {
-
-            }
-
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode()==KeyEvent.VK_ENTER){
-                    System.out.println("채팅 입력 & 소켓 전송");
-                }
-
-            }
-
-            public void keyReleased(KeyEvent e) {
-
-            }
-        });
+        chat_TextField.addMouseListener(this);
+        chat_TextField.addKeyListener(this);
         chat_send_Button = new JButton("전송");
-        chat_send_Button.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if(e.getSource()==chat_send_Button){
-                    System.out.println("채팅 입력 & 소켓 전송");
-                }
-            }
-        });
+        chat_send_Button.addActionListener(this);
 
         start_Button = new JButton("시작");
-        start_Button.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if(e.getSource()==start_Button){
-                    //
-                    System.out.println("Game Start");
-                }
-            }
-        });
+        start_Button.addActionListener(this);
 
         exit_Button = new JButton("나가기");
-        exit_Button.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if(e.getSource()==exit_Button){
-                    RoomUI.super.dispose();
-                    WaitingUI waitingUI = new WaitingUI();
-                    System.out.println("나가기");
-                }
-            }
-        });
+        exit_Button.addActionListener(this);
 
         //Component add
         for(int i=0; i<SIZE; i++){
@@ -149,7 +116,7 @@ public class RoomUI extends JFrame implements UI{
         etc_Panel.add(under_Panel);
         under_Panel.add(chat_Panel);
         under_Panel.add(button_Panel);
-        chat_Panel.add(chat_TextArea);
+        chat_Panel.add(chat_ScrollPane);
         chat_Panel.add(chat_TextField);
         button_Panel.add(chat_send_Button);
         button_Panel.add(start_Button);
@@ -283,5 +250,54 @@ public class RoomUI extends JFrame implements UI{
         new RoomUI();
         //start
     }
+
+    public void actionPerformed(ActionEvent e) {
+        Object o = e.getSource();
+        if(o==chat_send_Button){
+            if(!chat_TextField.getText().equals("")) {
+                chat_TextArea.append(chat_TextField.getText() + "\n");
+                chat_TextField.setText("");
+                System.out.println("채팅 입력 & 소켓 전송");
+            }
+        }else if(o==start_Button){
+            //Socket 메시지
+            System.out.println("Game Start");
+
+        }else if(o==exit_Button){
+            RoomUI.super.dispose();
+            WaitingUI waitingUI = new WaitingUI();
+            System.out.println("나가기");
+        }
+
+    }
+
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    public void keyPressed(KeyEvent e) {
+        if(e.getKeyCode()==KeyEvent.VK_ENTER){
+            if(!chat_TextField.getText().equals("")) {
+                chat_TextArea.append(chat_TextField.getText() + "\n");
+                chat_TextField.setText("");
+                System.out.println("채팅 입력 & 소켓 전송");
+            }
+        }
+    }
+    public void keyReleased(KeyEvent e) {
+    }
+
+    public void mouseClicked(MouseEvent e) {
+        chat_TextField.setText("");
+    }
+    public void mousePressed(MouseEvent e) {
+    }
+    public void mouseReleased(MouseEvent e) {
+    }
+    public void mouseEntered(MouseEvent e) {
+    }
+    public void mouseExited(MouseEvent e) {
+    }
+
     //body end
 }

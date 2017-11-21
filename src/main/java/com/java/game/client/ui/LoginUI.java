@@ -1,6 +1,6 @@
 package com.java.game.client.ui;
 
-import com.java.game.client.Client;
+import com.java.game.client.manager.Client;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,6 +8,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.HashMap;
 
 public class LoginUI extends JFrame implements UI{
@@ -28,8 +31,7 @@ public class LoginUI extends JFrame implements UI{
     private JTextField name_TextField;
     private JButton start_Button;
 
-    public LoginUI(Client client) throws Exception{
-        this.client = client;
+    public LoginUI() throws Exception{
         this.init();
     }
 //    public LoginUI(Client client){
@@ -68,18 +70,21 @@ public class LoginUI extends JFrame implements UI{
                     if(name_TextField.getText().equals("")){
                         System.out.println("닉네임을 입력해주세요");
                     }else{
-                        System.out.println("name: "+name_TextField.getText());
-                        setName(name_TextField.getText());
-
+                        String name = name_TextField.getText();
+                        System.out.println("name: "+name);
                         System.out.println("button Click");
-                        System.out.println("Socket connection needed");
 
+                        client = new Client(name);
                         try {
                             client.connect();
+                            PrintWriter pw = new PrintWriter(client.getSocket().getOutputStream());
+                            pw.println(name);
+                            pw.flush();
+                            client.threadStart();
                         } catch (Exception e1) {
                             e1.printStackTrace();
                         }
-                        LoginUI.super.dispose();
+//                        LoginUI.super.dispose();
                         WaitingUI waitingUI = new WaitingUI();
                     }
                 }
@@ -97,17 +102,23 @@ public class LoginUI extends JFrame implements UI{
                     if(name_TextField.getText().equals("")){
                         System.out.println("닉네임을 입력해주세요");
                     }else{
-                        System.out.println("name: "+name_TextField.getText());
+                        String name = name_TextField.getText();
+                        System.out.println("name: "+name);
                         System.out.println("button Click");
-                        setName(name_TextField.getText());
+
+                        client = new Client(name);
                         try {
                             client.connect();
+                            PrintWriter pw = new PrintWriter(client.getSocket().getOutputStream());
+                            pw.println(name);
+                            pw.flush();
+                            client.threadStart();
                         } catch (Exception e1) {
                             e1.printStackTrace();
                         }
 
                         System.out.println("Socket connection needed");
-                        LoginUI.super.dispose();
+//                        LoginUI.super.dispose();
                         WaitingUI waitingUI = new WaitingUI();
                     }
                 }
@@ -134,11 +145,8 @@ public class LoginUI extends JFrame implements UI{
 
     }
 
-    public LoginUI(){}
 
-    public void setName(String name){
-        client.setName(name);
-    }
+
 
 
 

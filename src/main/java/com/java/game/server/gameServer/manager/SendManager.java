@@ -13,16 +13,14 @@ import java.net.Socket;
 @Data
 public class SendManager extends Thread {
 
-    private LogManager logManager;
 
     private Socket socket;
 
     private BufferedReader br;
     private PrintWriter pw;
 
-    public SendManager(Socket socket, LogManager logManager) throws  Exception{
+    public SendManager(Socket socket) throws  Exception{
         this.socket = socket;
-        this.logManager = logManager;
         br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         pw = new PrintWriter(socket.getOutputStream());
         this.start();

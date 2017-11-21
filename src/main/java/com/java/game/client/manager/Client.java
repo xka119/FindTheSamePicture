@@ -1,16 +1,14 @@
-package com.java.game.client;
+package com.java.game.client.manager;
 
 
-import com.java.game.client.manager.GameManager;
-import com.java.game.client.manager.RecvManager;
-import com.java.game.client.manager.SendManager;
 import com.java.game.client.ui.LoginUI;
 import com.java.game.client.ui.RoomUI;
 import com.java.game.client.ui.WaitingUI;
 import com.java.game.common.Common;
-import com.java.game.common.Type;
 import lombok.Data;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
@@ -34,54 +32,60 @@ public class Client {
     private static GameManager gameManager;
 
     // 필요한 것들은?
-    private String name;
-    private boolean state = true; //대기방= true, 방 = false
+    private static String name;
+    private int state; //대기방= true, 방 = false
     private int score; // 점수
     private String answer1,answer2;
     private String flag; // flag - connect, chat, game, log, etc
     // private 두개의 점수 맞출수 있는 신호 두개 필요함
 
 
-    public Client() throws Exception {
-        loginUI = new LoginUI(this);
+    public Client(String _name) {
+        name = _name;
     }
+    public Client(){}
 
     // socket connect
     public void connect() throws Exception{
         socket = new Socket(ip,port);
-        PrintWriter pw = new PrintWriter(socket.getOutputStream());
-        pw.println(Type.CONNECT);
-        pw.println(this.name);
-        pw.flush();
+//        BufferedReader br =new BufferedReader(new InputStreamReader(System.in));
+//        PrintWriter pw = new PrintWriter(socket.getOutputStream());
+//        System.out.println("이름을 입력하세요");
+//        name = br.readLine();
+//        pw.println(name);
+//        pw.flush();
         System.out.println("Server Connected");
 
 
         recvManager = new RecvManager(socket);
         sendManager = new SendManager(socket);
+        System.out.println("Thread Start");
 
 
-        //이건 Room입장해서 시작할때 만들면됨
-//        gameManager = new GameManager(socket, this);
+
+
+    }
+    public void threadStart(){
+        recvManager.start();
+        sendManager.start();
     }
 
-    public void start(){
-        while(true){
-            //화면에서 x를 누르면 끝내야함.
-        }
-    }
+
 
     public void enterRoom(){
-        state = false;
+        state =0;
         //룸 쓰레드를 생성은아니고..
     }
-    public void gameStart(){
-
+    public static void setName(String _name){
+        name = _name;
     }
+
 
 
     public static void main(String[] args) throws Exception {
         Client client = new Client();
-        client.start();
+        client.connect();
+        client.threadStart();
 
     }
 

@@ -1,14 +1,11 @@
 package com.java.game.server.logServer;
 
 import com.java.game.common.Common;
-import com.java.game.server.logServer.manager.ReadManager;
-import lombok.AllArgsConstructor;
+import com.java.game.server.logServer.manager.LogManager;
 import lombok.Data;
-import lombok.extern.java.Log;
 
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 
 @Data
 public class LogServer {
@@ -18,7 +15,7 @@ public class LogServer {
     private Socket socket;
 
     // 로그를 읽어들이는 쓰레드
-    private static ReadManager readManager;
+    private static LogManager readManager;
 
     private int port = Common.logServer_port;
 
@@ -36,7 +33,7 @@ public class LogServer {
             socket = logServerSocket.accept();
 
             // 쓰레드 생성
-            readManager = new ReadManager(socket);
+            readManager = new LogManager(socket);
             readManager.start();
             System.out.println("LogServer readManager start");
         }

@@ -2,12 +2,9 @@ package com.java.game.client.ui;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 
-public class WaitingUI extends JFrame implements UI{
+public class WaitingUI extends JFrame implements UI, ActionListener, KeyListener, MouseListener{
 
     //UI
     RoomUI[] roomUI_List;
@@ -26,6 +23,7 @@ public class WaitingUI extends JFrame implements UI{
     private JLabel user_Label;
     private JTextArea user_list_TextArea;
 
+    private JScrollPane chat_ScrollPane;
     private JTextArea chat_TextArea;
 
     private JTextField chat_TextField;
@@ -75,31 +73,12 @@ public class WaitingUI extends JFrame implements UI{
         user_list_TextArea = new JTextArea();
 
         chat_TextArea = new JTextArea();
+        chat_ScrollPane = new JScrollPane(chat_TextArea);
         chat_TextField = new JTextField("채팅을 입력하세요"); //setToolText 사용 or 없애기
-        chat_TextField.addKeyListener(new KeyListener() {
-            public void keyTyped(KeyEvent e) {
-
-            }
-
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode()==KeyEvent.VK_ENTER){
-                    System.out.println("채팅 입력 & 소켓 전송");
-                }
-
-            }
-
-            public void keyReleased(KeyEvent e) {
-
-            }
-        });
+        chat_TextField.addMouseListener(this);
+        chat_TextField.addKeyListener(this);
         chat_send_Button = new JButton("전송");
-        chat_send_Button.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if(e.getSource()==chat_send_Button){
-                    System.out.println("채팅 입력 & 소켓 전송");
-                }
-            }
-        });
+        chat_send_Button.addActionListener(this);
 
 
         //Component add
@@ -112,7 +91,7 @@ public class WaitingUI extends JFrame implements UI{
         user_Panel.add(user_Label);
         user_Panel.add(user_list_TextArea);
 
-        info_Panel2.add(chat_TextArea, BorderLayout.CENTER);
+        info_Panel2.add(chat_ScrollPane, BorderLayout.CENTER);
         info_Panel2.add(chat_Panel, BorderLayout.SOUTH);
 
         chat_Panel.add(chat_TextField, BorderLayout.CENTER);
@@ -137,5 +116,57 @@ public class WaitingUI extends JFrame implements UI{
         new WaitingUI();
         //start
     }
+
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource()==chat_send_Button){
+            if(!chat_TextField.getText().equals("")) {
+                chat_TextArea.append(chat_TextField.getText() + "\n");
+                System.out.println(chat_TextField.getText());
+                System.out.println("채팅 입력 & 소켓 전송");
+                chat_TextField.setText("");
+            }
+        }
+    }
+
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    public void keyPressed(KeyEvent e) {
+        if(e.getKeyCode()==KeyEvent.VK_ENTER){
+            if(!chat_TextField.getText().equals("")) {
+                chat_TextArea.append(chat_TextField.getText() + "\n");
+                System.out.println(chat_TextField.getText());
+                System.out.println("채팅 입력 & 소켓 전송");
+                chat_TextField.setText("");
+            }
+        }
+
+    }
+
+    public void keyReleased(KeyEvent e) {
+
+    }
+
+    public void mouseClicked(MouseEvent e) {
+        chat_TextField.setText("");
+    }
+
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    public void mouseExited(MouseEvent e) {
+
+    }
+
     //body end
 }

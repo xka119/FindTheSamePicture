@@ -10,4 +10,8 @@ public class Type {
     public static String EXIT = "EXIT";
 
     public static String ETC = "ETC";
+
+
+    public static final int WAITING_ROOM = 0;
+    public static final int ROOM= 1;
 }

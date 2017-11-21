@@ -21,7 +21,6 @@ public class RecvManager extends Thread {
     public RecvManager(Socket socket) throws IOException {
         this.socket = socket;
         br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        this.start();
         System.out.println("Client RecvManager start");
     }
 
@@ -33,25 +32,16 @@ public class RecvManager extends Thread {
         3. Type = GAME일 경우 GameLogic을 실행시킨다. //GameLogic클래스를 하나 만들어야할듯함
         4. 위를 반복한다.
          */
-        super.run();
         text = "";
         try {
-
-            while (true) {
-                flag = br.readLine();
-                System.out.println(flag);
-                if(flag==Type.CHAT) {
-                    //type chat이면 한번 더 읽어서 채팅창에 읽어준다
-                    text = br.readLine();
+            while(true){
+                text = br.readLine();
+                if(text!=null) {
                     System.out.println(text);
-                }else if(text==Type.GAME){
-                    // game관련 로직으로 들어가야할듯.
                 }
             }
         }catch(Exception e) {
             e.printStackTrace();
-        }finally {
-
         }
 
                 //if문 stop
