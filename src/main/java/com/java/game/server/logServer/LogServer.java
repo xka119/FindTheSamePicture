@@ -1,7 +1,6 @@
 package com.java.game.server.logServer;
 
 import com.java.game.common.Common;
-import com.java.game.server.logServer.manager.LogManager;
 import lombok.Data;
 
 import java.net.ServerSocket;
@@ -10,12 +9,13 @@ import java.net.Socket;
 @Data
 public class LogServer {
 
+
     // Socket
     private ServerSocket logServerSocket;
     private Socket socket;
 
     // 로그를 읽어들이는 쓰레드
-    private static LogManager readManager;
+    private static LogManager logManager;
 
     private int port = Common.logServer_port;
 
@@ -24,6 +24,7 @@ public class LogServer {
     public LogServer() throws Exception {
         logServerSocket = new ServerSocket(port);
         System.out.println("LogServer created");
+
     }
 
     public void connect() throws Exception {
@@ -33,8 +34,8 @@ public class LogServer {
             socket = logServerSocket.accept();
 
             // 쓰레드 생성
-            readManager = new LogManager(socket);
-            readManager.start();
+            logManager = new LogManager(socket);
+            logManager.start();
             System.out.println("LogServer readManager start");
         }
     }

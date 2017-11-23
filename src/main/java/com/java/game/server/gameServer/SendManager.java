@@ -1,4 +1,4 @@
-package com.java.game.server.gameServer.manager;
+package com.java.game.server.gameServer;
 
 import lombok.Data;
 import org.apache.ibatis.logging.Log;

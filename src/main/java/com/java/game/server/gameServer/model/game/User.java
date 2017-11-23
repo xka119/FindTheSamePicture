@@ -1,4 +1,4 @@
-package com.java.game.server.gameServer.model;
+package com.java.game.server.gameServer.model.game;
 
 import lombok.Data;
 
@@ -11,9 +11,9 @@ public class User {
     private String name;
 
     private int state;
+    private int score;
     private String answer1,answer2;
 
-    private String roomNumber;
 
     public User(){ }
 

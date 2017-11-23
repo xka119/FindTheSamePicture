@@ -1,4 +1,4 @@
-package com.java.game.client.manager;
+package com.java.game.client;
 
 
 import com.java.game.client.ui.LoginUI;
@@ -25,6 +25,11 @@ public class Client {
     private String ip = Common.ip;
     private int port = Common.gameServer_port;
 
+
+    //
+    private BufferedReader br;
+    private PrintWriter pw;
+
     //Manager
     private static RecvManager recvManager;
     private static SendManager sendManager;
@@ -32,7 +37,7 @@ public class Client {
     private static GameManager gameManager;
 
     // 필요한 것들은?
-    private static String name;
+    private String name;
     private int state; //대기방= true, 방 = false
     private int score; // 점수
     private String answer1,answer2;
@@ -48,12 +53,12 @@ public class Client {
     // socket connect
     public void connect() throws Exception{
         socket = new Socket(ip,port);
-//        BufferedReader br =new BufferedReader(new InputStreamReader(System.in));
-//        PrintWriter pw = new PrintWriter(socket.getOutputStream());
+        br =new BufferedReader(new InputStreamReader(System.in));
+        pw = new PrintWriter(socket.getOutputStream());
 //        System.out.println("이름을 입력하세요");
 //        name = br.readLine();
-//        pw.println(name);
-//        pw.flush();
+        pw.println(name);
+        pw.flush();
         System.out.println("Server Connected");
 
 
@@ -76,7 +81,7 @@ public class Client {
         state =0;
         //룸 쓰레드를 생성은아니고..
     }
-    public static void setName(String _name){
+    public void setName(String _name){
         name = _name;
     }
 

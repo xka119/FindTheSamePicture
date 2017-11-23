@@ -1,8 +1,9 @@
-package com.java.game.server.gameServer.manager;
+package com.java.game.server.gameServer;
 
 import com.java.game.common.Common;
 import com.java.game.common.Type;
-import com.java.game.server.gameServer.model.User;
+import com.java.game.server.gameServer.model.game.Room;
+import com.java.game.server.gameServer.model.game.User;
 import lombok.Data;
 
 import java.io.BufferedReader;
@@ -16,12 +17,12 @@ import java.util.ArrayList;
 @Data
 public class GameServer{
 
-    private static int count = 0;
-
-
     // Socket
      ServerSocket serverSocket;
      Socket clientSocket;
+
+     PrintWriter pw;
+     BufferedReader br;
 
      static Socket logSocket;
 
@@ -33,22 +34,28 @@ public class GameServer{
     //접속 유저 리스트 - socket, name을 가지고 있다 //state, score, 등등등등등.
      static ArrayList<User> userList;
 
-
+     //RoomList
+    static ArrayList<Room> roomList;
 
     //Manager
-     static RoomManager roomManager;
-
 
     // GmaeServer 시작시 LogManager, RoomManager는 반드시 실행되어야한다.
     public GameServer() throws Exception {
         logSocket = new Socket(ip,logServer_port);
-        System.out.println("LogServer Connected");
+        pw = new PrintWriter(logSocket.getOutputStream());
+        pw.println("게임 서버 연결");
+        pw.flush();
+
+        System.out.println("로그 서버 연결");
 
         // Manager Start
-        roomManager = new RoomManager();
+//        serverUtility = new ServerUtility();
+        // Room Setting
+        this.setting_Room();
+        System.out.println("Room setting finished");
 
         serverSocket = new ServerSocket(gameServer_Port);
-        System.out.println("GameServer Created");
+        System.out.println("게임서버 소켓 생성 ");
 
 
         //list 생성
@@ -61,10 +68,10 @@ public class GameServer{
         System.out.println("GameServer wait");
         while(true) {
             clientSocket = serverSocket.accept();
-            System.out.println("Client connected");
+//            System.out.println("Client connected");
 
             //처음에 입장시 이름과 소켓을 입력한다.
-            BufferedReader br = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            br = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             //flag 비우기
 //            br.readLine();
 
@@ -72,10 +79,10 @@ public class GameServer{
             String name = br.readLine();
             User user = new User(clientSocket, name, Type.WAITING_ROOM);
             addUser(user);
-            RecvManager recvManager = new RecvManager(user);
-            recvManager.start();
+            UserManager userManager = new UserManager(user);
+            userManager.start();
 
-            PrintWriter pw = new PrintWriter(logSocket.getOutputStream());
+            pw = new PrintWriter(logSocket.getOutputStream());
             pw.println(name + "님이 접속하셨습니다.\n" + userList.size() + "명 접속중" );
             pw.flush();
 
@@ -83,6 +90,15 @@ public class GameServer{
             System.out.println(userList.size() +"명 접속중");
 
 
+        }
+    }
+
+    // Room Setting
+    public void setting_Room(){
+        roomList = new ArrayList<Room>();
+        for(int i=0; i<Common.ROOM_SIZE; i++){
+            roomList.add(new Room(i+1));
+            System.out.println((i+1)+"번 방 생성");
         }
     }
     //사람 추가

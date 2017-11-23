@@ -1,4 +1,4 @@
-package com.java.game.client.manager;
+package com.java.game.client;
 
 import com.java.game.common.Type;
 import lombok.Data;
@@ -16,12 +16,12 @@ public class RecvManager extends Thread {
     private BufferedReader br;
 
     private String text;
-    private String flag;
+    private int flag;
 
     public RecvManager(Socket socket) throws IOException {
         this.socket = socket;
         br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        System.out.println("Client RecvManager start");
+        System.out.println("Client UserManager start");
     }
 
     @Override
@@ -35,10 +35,29 @@ public class RecvManager extends Thread {
         text = "";
         try {
             while(true){
+                flag = Integer.parseInt(br.readLine());
                 text = br.readLine();
-                if(text!=null) {
-                    System.out.println(text);
+
+                switch (flag){
+                    //Type.CHAT
+                    case 11:
+                        System.out.println(text);
+                        break;
+                    //Type.GAME
+                    case 12:
+                        break;
+
+                    //Type.EXIT
+                    case 13:
+                        break;
+
+                    default:
+                        break;
+
                 }
+//                if(text!=null) {
+//                    System.out.println(text);
+//                }
             }
         }catch(Exception e) {
             e.printStackTrace();

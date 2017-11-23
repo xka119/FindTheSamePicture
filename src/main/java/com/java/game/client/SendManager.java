@@ -1,4 +1,4 @@
-package com.java.game.client.manager;
+package com.java.game.client;
 
 import com.java.game.common.Type;
 import lombok.Data;
@@ -44,6 +44,7 @@ public class SendManager extends Thread {
                 text = br.readLine();
 //                System.out.println("text: " + text);
 
+                pw.println(Type.CHAT);
                 pw.println(text);
                 pw.flush();
 

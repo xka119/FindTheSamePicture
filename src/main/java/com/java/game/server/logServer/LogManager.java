@@ -1,4 +1,4 @@
-package com.java.game.server.logServer.manager;
+package com.java.game.server.logServer;
 
 import lombok.Data;
 
@@ -12,6 +12,8 @@ import java.util.Date;
 @Data
 public class LogManager extends Thread {
 
+    private LogUI logUI;
+
     private Socket socket;
     private BufferedReader br;
     private String text;
@@ -24,6 +26,8 @@ public class LogManager extends Thread {
     public LogManager(Socket socket) throws IOException {
         this.socket = socket;
         br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        logUI = new LogUI();
+        logUI.init();
     }
 
 
@@ -38,7 +42,13 @@ public class LogManager extends Thread {
                 while((text=br.readLine())!=null){
                     date = new Date();
                     time = simpleDateFormat.format(date);
-                    System.out.println("["+time+"]"+" "+text);
+                    //console log
+                    String logText = "["+time+"]"+" "+text;
+                    System.out.println(logText);
+
+                    //로그서버로 전달
+                    logUI.addLog(logText);
+
                 }
 
             }catch (Exception e){

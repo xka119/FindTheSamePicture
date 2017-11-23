@@ -1,13 +1,23 @@
 package com.java.game.client.ui;
 
+import com.java.game.client.Client;
+import com.java.game.common.Type;
+import lombok.Data;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.PrintWriter;
 
+@Data
 public class WaitingUI extends JFrame implements UI, ActionListener, KeyListener, MouseListener{
 
+
+    private Client client;
+    private PrintWriter pw;
+
     //UI
-    RoomUI[] roomUI_List;
+    RoomUI roomUI;
     private static final int ROOM_SIZE = 9;
 
     //panel
@@ -33,6 +43,11 @@ public class WaitingUI extends JFrame implements UI, ActionListener, KeyListener
         this.init();
     }
 
+    public WaitingUI(Client client){
+        this.client = client;
+        this.init();
+    }
+
     public void init() {
         Container container = this.getContentPane();
 
@@ -54,19 +69,19 @@ public class WaitingUI extends JFrame implements UI, ActionListener, KeyListener
 
         //Component Setting
         room_ButtonList = new JButton[ROOM_SIZE];
-        roomUI_List = new RoomUI[ROOM_SIZE];
 
         for(int i=0; i<ROOM_SIZE; i++){
             room_ButtonList[i] = new JButton((i+1)+"번 방"); //뒤에 텍스트는 클릭시 listener 구현필요
+            room_ButtonList[i].addActionListener(this);
             //   roomUI_List[i] = new RoomUI(room_ButtonList[i].getName()); //created
-            room_ButtonList[i].addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    WaitingUI.super.dispose();
-                    RoomUI roomUI = new RoomUI();
-                    System.out.println("입장");
-
-                }
-            });
+//            room_ButtonList[i].addActionListener(new ActionListener() {
+//                public void actionPerformed(ActionEvent e) {
+//                    WaitingUI.super.dispose();
+//                    RoomUI roomUI = new RoomUI();
+//                    System.out.println("입장");
+//
+//                }
+//            });
         }
 
         user_Label = new JLabel("접속자 목록");
@@ -109,6 +124,10 @@ public class WaitingUI extends JFrame implements UI, ActionListener, KeyListener
         this.setLocationRelativeTo(null);
         //  this.pack();
 
+        //Room setting
+        roomUI = new RoomUI(this);
+        roomUI.init();
+
 
     }
 
@@ -118,12 +137,172 @@ public class WaitingUI extends JFrame implements UI, ActionListener, KeyListener
     }
 
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource()==chat_send_Button){
+        Object o = e.getSource();
+        if(o==chat_send_Button){
             if(!chat_TextField.getText().equals("")) {
                 chat_TextArea.append(chat_TextField.getText() + "\n");
                 System.out.println(chat_TextField.getText());
                 System.out.println("채팅 입력 & 소켓 전송");
                 chat_TextField.setText("");
+            }
+        }else{
+            //XX방 이름이 있겠지?
+            String roomNumber;
+            try {
+                if (o == room_ButtonList[0]) {
+//                    System.out.println(room_ButtonList[0].getText());
+                    roomNumber = room_ButtonList[0].getText().substring(0, 1);
+
+
+                        pw = new PrintWriter(client.getSocket().getOutputStream());
+                        pw.println(roomNumber);
+                        pw.println(roomNumber+"번 방 입장");
+                        pw.flush();
+
+                        this.setVisible(false);
+                        roomUI.setTitle(roomNumber);
+                        roomUI.setVisible(true);
+                        System.out.println("입장");
+
+                } else if (o == room_ButtonList[1]) {
+                    roomNumber = room_ButtonList[1].getText().substring(0, 1);
+
+
+                    pw = new PrintWriter(client.getSocket().getOutputStream());
+                    pw.println(roomNumber);
+                    pw.println(roomNumber+"번 방 입장");
+                    pw.flush();
+
+                    this.setVisible(false);
+                    roomUI.setTitle(roomNumber);
+                    roomUI.setVisible(true);
+
+                    System.out.println("입장");
+
+                } else if(o == room_ButtonList[2]){
+                    roomNumber = room_ButtonList[2].getText().substring(0, 1);
+
+
+                    pw = new PrintWriter(client.getSocket().getOutputStream());
+                    pw.println(roomNumber);
+                    pw.println(roomNumber+"번 방 입장");
+                    pw.flush();
+
+                    this.setVisible(false);
+                    roomUI.setTitle(roomNumber);
+                    roomUI.setVisible(true);
+
+                    System.out.println("입장");
+
+                } else if(o == room_ButtonList[3]){
+                    roomNumber = room_ButtonList[3].getText().substring(0, 1);
+
+
+                    pw = new PrintWriter(client.getSocket().getOutputStream());
+                    pw.println(roomNumber);
+                    pw.println(roomNumber+"번 방 입장");
+                    pw.flush();
+
+                    this.setVisible(false);
+                    roomUI.setTitle(roomNumber);
+                    roomUI.setVisible(true);
+
+                    System.out.println("입장");
+
+                }else if(o == room_ButtonList[4]){
+                    roomNumber = room_ButtonList[4].getText().substring(0, 1);
+
+
+                    pw = new PrintWriter(client.getSocket().getOutputStream());
+                    pw.println(roomNumber);
+                    pw.println(roomNumber+"번 방 입장");
+                    pw.flush();
+
+                    this.setVisible(false);
+                    roomUI.setTitle(roomNumber);
+                    roomUI.setVisible(true);
+
+                    System.out.println("입장");
+
+                }else if(o == room_ButtonList[5]){
+                    roomNumber = room_ButtonList[5].getText().substring(0, 1);
+
+
+                    pw = new PrintWriter(client.getSocket().getOutputStream());
+                    pw.println(roomNumber);
+                    pw.println(roomNumber+"번 방 입장");
+                    pw.flush();
+
+                    this.setVisible(false);
+                    roomUI.setTitle(roomNumber);
+                    roomUI.setVisible(true);
+;
+                    System.out.println("입장");
+
+                }else if(o == room_ButtonList[6]){
+                    roomNumber = room_ButtonList[6].getText().substring(0, 1);
+
+
+                    pw = new PrintWriter(client.getSocket().getOutputStream());
+                    pw.println(roomNumber);
+                    pw.println(roomNumber+"번 방 입장");
+                    pw.flush();
+
+                    this.setVisible(false);
+                    roomUI.setTitle(roomNumber);
+                    roomUI.setVisible(true);
+
+                    System.out.println("입장");
+
+                }else if(o == room_ButtonList[7]){
+                    roomNumber = room_ButtonList[7].getText().substring(0, 1);
+
+
+                    pw = new PrintWriter(client.getSocket().getOutputStream());
+                    pw.println(roomNumber);
+                    pw.println(roomNumber+"번 방 입장");
+                    pw.flush();
+
+                    this.setVisible(false);
+                    roomUI.setTitle(roomNumber);
+                    roomUI.setVisible(true);
+
+                    System.out.println("입장");
+
+                }else if(o == room_ButtonList[8]){
+                    roomNumber = room_ButtonList[8].getText().substring(0, 1);
+
+
+                    pw = new PrintWriter(client.getSocket().getOutputStream());
+                    pw.println(roomNumber);
+                    pw.println(roomNumber+"번 방 입장");
+                    pw.flush();
+
+                    this.setVisible(false);
+                    roomUI.setTitle(roomNumber);
+                    roomUI.setVisible(true);
+
+                    System.out.println("입장");
+
+                }else if(o == room_ButtonList[9]){
+                    roomNumber = room_ButtonList[9].getText().substring(0, 1);
+
+
+                    pw = new PrintWriter(client.getSocket().getOutputStream());
+                    pw.println(roomNumber);
+                    pw.println(roomNumber+"번 방 입장");
+                    pw.flush();
+
+                    this.setVisible(false);
+                    roomUI.setTitle(roomNumber);
+                    roomUI.setVisible(true);
+
+                    System.out.println("입장");
+
+                }else{}
+
+            }catch(Exception e1){
+                e1.printStackTrace();
             }
         }
     }

@@ -1,25 +1,19 @@
 package com.java.game.client.ui;
 
-import com.java.game.client.manager.Client;
+import com.java.game.client.Client;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.awt.event.*;
 import java.io.PrintWriter;
 import java.util.HashMap;
 
-public class LoginUI extends JFrame implements UI{
+public class LoginUI extends JFrame implements UI, KeyListener, ActionListener{
 
     //Client
     private Client client;
 
     //UI
-    private HashMap<Integer, RoomUI> roomUIMap; //1번 ~ 9번방을 hashMap으로 관리.
     private WaitingUI waitingUI;
 
     //panel
@@ -60,70 +54,71 @@ public class LoginUI extends JFrame implements UI{
 
         name_TextField = new JTextField(9);
         name_TextField.setToolTipText("이름을 입력하세요(9자 이내)");
-        name_TextField.addKeyListener(new KeyListener() {
-            public void keyTyped(KeyEvent e) {
-
-            }
-
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode()==KeyEvent.VK_ENTER){
-                    if(name_TextField.getText().equals("")){
-                        System.out.println("닉네임을 입력해주세요");
-                    }else{
-                        String name = name_TextField.getText();
-                        System.out.println("name: "+name);
-                        System.out.println("button Click");
-
-                        client = new Client(name);
-                        try {
-                            client.connect();
-                            PrintWriter pw = new PrintWriter(client.getSocket().getOutputStream());
-                            pw.println(name);
-                            pw.flush();
-                            client.threadStart();
-                        } catch (Exception e1) {
-                            e1.printStackTrace();
-                        }
-//                        LoginUI.super.dispose();
-                        WaitingUI waitingUI = new WaitingUI();
-                    }
-                }
-            }
-
-            public void keyReleased(KeyEvent e) {
-
-            }
-        });
+        name_TextField.addKeyListener(this);
+//
+//        name_TextField.addKeyListener(new KeyListener() {
+//            public void keyTyped(KeyEvent e) {
+//
+//            }
+//
+//            public void keyPressed(KeyEvent e) {
+//                if(e.getKeyCode()==KeyEvent.VK_ENTER){
+//                    if(name_TextField.getText().equals("")){
+//                        System.out.println("닉네임을 입력해주세요");
+//                    }else{
+//                        String name = name_TextField.getText();
+//                        System.out.println("name: "+name);
+//                        System.out.println("button Click");
+//
+//                        try {
+//                            client = new Client(name);
+//                            client.connect();
+//
+//                            client.threadStart();
+//                        } catch (Exception e1) {
+//                            e1.printStackTrace();
+//                        }
+//                        WaitingUI waitingUI = new WaitingUI(client);
+//                    }
+//                }
+//            }
+//
+//            public void keyReleased(KeyEvent e) {
+//
+//            }
+//        });
 
         start_Button = new JButton("접속");
-        start_Button.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if(e.getSource()==start_Button){
-                    if(name_TextField.getText().equals("")){
-                        System.out.println("닉네임을 입력해주세요");
-                    }else{
-                        String name = name_TextField.getText();
-                        System.out.println("name: "+name);
-                        System.out.println("button Click");
+        start_Button.addActionListener(this);
 
-                        client = new Client(name);
-                        try {
-                            client.connect();
-                            PrintWriter pw = new PrintWriter(client.getSocket().getOutputStream());
-                            pw.println(name);
-                            pw.flush();
-                            client.threadStart();
-                        } catch (Exception e1) {
-                            e1.printStackTrace();
-                        }
-
-                        System.out.println("Socket connection needed");
-//                        LoginUI.super.dispose();
-                        WaitingUI waitingUI = new WaitingUI();
-                    }
-                }
-            }
-        });
+//        start_Button.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                if(e.getSource()==start_Button){
+//                    if(name_TextField.getText().equals("")){
+//                        System.out.println("닉네임을 입력해주세요");
+//                    }else{
+//                        String name = name_TextField.getText();
+//                        System.out.println("name: "+name);
+//                        System.out.println("button Click");
+//
+//                        try {
+//                            client = new Client(name);
+//                            client.connect();
+////                            PrintWriter pw = new PrintWriter(client.getSocket().getOutputStream());
+////                            pw.println(name);
+////                            pw.flush();
+//                            client.threadStart();
+//                        } catch (Exception e1) {
+//                            e1.printStackTrace();
+//                        }
+//
+//                        System.out.println("Socket connection needed");
+////                        LoginUI.super.dispose();
+//                        WaitingUI waitingUI = new WaitingUI(client);
+//                    }
+//                }
+//            }
+//        });
         //Component add
         main_Panel.add(title_Label);
         main_Panel.add(connect_Pannel);
@@ -153,6 +148,62 @@ public class LoginUI extends JFrame implements UI{
     public static void main(String[] args) throws Exception{
         LoginUI loginUI = new LoginUI();
         //start
+
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource()==start_Button){
+            if(name_TextField.getText().equals("")){
+                System.out.println("닉네임을 입력해주세요");
+            }else{
+                String name = name_TextField.getText();
+                System.out.println("name: "+name);
+                System.out.println("button Click");
+
+                try {
+                    client = new Client(name);
+                    client.connect();
+                    client.threadStart();
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+
+                System.out.println("Socket connection needed");
+                this.setVisible(false);
+                WaitingUI waitingUI = new WaitingUI(client);
+            }
+        }
+    }
+
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    public void keyPressed(KeyEvent e) {
+        if(e.getKeyCode()==KeyEvent.VK_ENTER){
+            if(name_TextField.getText().equals("")){
+                System.out.println("닉네임을 입력해주세요");
+            }else{
+                String name = name_TextField.getText();
+                System.out.println("name: "+name);
+                System.out.println("button Click");
+
+                try {
+                    client = new Client(name);
+                    client.connect();
+
+                    client.threadStart();
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+                this.setVisible(false);
+                WaitingUI waitingUI = new WaitingUI(client);
+            }
+        }
+
+    }
+
+    public void keyReleased(KeyEvent e) {
 
     }
     //body end

@@ -1,10 +1,19 @@
 package com.java.game.client.ui;
 
+import com.java.game.common.Type;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.PrintWriter;
 
 public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, MouseListener{
+
+    //
+    private PrintWriter pw;
+
+    //UI
+    private WaitingUI waitingUI;
 
     private static final int SIZE = 16;
     private String room_Name;
@@ -34,6 +43,9 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
 
 
 
+    public RoomUI(WaitingUI waitingUI){
+        this.waitingUI = waitingUI;
+    }
 
     public RoomUI(String room_Name){
         this.room_Name = room_Name;
@@ -128,7 +140,7 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
         //default Setting
         this.setTitle("같은그림찾기");
         this.setSize(1000,800);
-        this.setVisible(true);
+        this.setVisible(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         //  this.pack();
@@ -264,8 +276,16 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
             System.out.println("Game Start");
 
         }else if(o==exit_Button){
-            RoomUI.super.dispose();
-            WaitingUI waitingUI = new WaitingUI();
+            this.setVisible(false);
+            waitingUI.setVisible(true);
+            try{
+                pw = new PrintWriter(waitingUI.getClient().getSocket().getOutputStream());
+                pw.println(com.java.game.common.Type.EXIT);
+                pw.println(this.getTitle()+"번 방 퇴장");
+                pw.flush();
+            }catch (Exception e1){
+                e1.printStackTrace();
+            }
             System.out.println("나가기");
         }
 

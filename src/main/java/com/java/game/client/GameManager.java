@@ -1,6 +1,5 @@
-package com.java.game.client.manager;
+package com.java.game.client;
 
-import com.java.game.client.GameLogic;
 import lombok.Data;
 
 import java.io.PrintWriter;
