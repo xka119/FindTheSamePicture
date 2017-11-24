@@ -1,12 +1,16 @@
 package com.java.game.client.ui;
 
 import com.java.game.client.Client;
+import com.java.game.client.RecvManager;
+import com.java.game.client.SendManager;
 import com.java.game.common.Type;
 import lombok.Data;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 
 @Data
@@ -15,6 +19,7 @@ public class WaitingUI extends JFrame implements UI, ActionListener, KeyListener
 
     private Client client;
     private PrintWriter pw;
+    private String name;
 
     //UI
     RoomUI roomUI;
@@ -43,12 +48,18 @@ public class WaitingUI extends JFrame implements UI, ActionListener, KeyListener
         this.init();
     }
 
-    public WaitingUI(Client client){
+    public WaitingUI(Client client) throws Exception{
         this.client = client;
+        this.name = client.getName();
+        this.pw = new PrintWriter(client.getSocket().getOutputStream());
         this.init();
     }
 
-    public void init() {
+    public void setRoomUI(RoomUI roomUI){
+        this.roomUI = roomUI;
+    }
+
+    public void init(){
         Container container = this.getContentPane();
 
         //default Layout
@@ -87,7 +98,7 @@ public class WaitingUI extends JFrame implements UI, ActionListener, KeyListener
         user_Label = new JLabel("접속자 목록");
         user_list_TextArea = new JTextArea();
 
-        chat_TextArea = new JTextArea();
+        chat_TextArea = new JTextArea("환영합니다");
         chat_ScrollPane = new JScrollPane(chat_TextArea);
         chat_TextField = new JTextField("채팅을 입력하세요"); //setToolText 사용 or 없애기
         chat_TextField.addMouseListener(this);
@@ -117,7 +128,7 @@ public class WaitingUI extends JFrame implements UI, ActionListener, KeyListener
         container.add(info_Panel2);
 
         //default Setting
-        this.setTitle("같은그림찾기");
+        this.setTitle("같은그림찾기 사용자 : "+name);
         this.setSize(1000,800);
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -125,9 +136,12 @@ public class WaitingUI extends JFrame implements UI, ActionListener, KeyListener
         //  this.pack();
 
         //Room setting
-        roomUI = new RoomUI(this);
-        roomUI.init();
-
+        try {
+            roomUI = new RoomUI(this);
+            roomUI.init();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 
@@ -140,9 +154,22 @@ public class WaitingUI extends JFrame implements UI, ActionListener, KeyListener
         Object o = e.getSource();
         if(o==chat_send_Button){
             if(!chat_TextField.getText().equals("")) {
-                chat_TextArea.append(chat_TextField.getText() + "\n");
-                System.out.println(chat_TextField.getText());
-                System.out.println("채팅 입력 & 소켓 전송");
+                String text = chat_TextField.getText();
+                append("["+client.getName()+"] "+chat_TextField.getText() + "\n");
+                System.out.println(text);
+                try{
+
+                    //Type.CHAT = 11
+                    pw.println("11");
+                    pw.println(text);
+                    pw.flush();
+
+                }catch (Exception e2){
+                    e2.printStackTrace();
+                }
+
+//                System.out.println("채팅 입력 & 소켓 전송");
+
                 chat_TextField.setText("");
             }
         }else{
@@ -154,150 +181,150 @@ public class WaitingUI extends JFrame implements UI, ActionListener, KeyListener
                     roomNumber = room_ButtonList[0].getText().substring(0, 1);
 
 
-                        pw = new PrintWriter(client.getSocket().getOutputStream());
                         pw.println(roomNumber);
                         pw.println(roomNumber+"번 방 입장");
                         pw.flush();
 
                         this.setVisible(false);
+                        setDefault_Chat();
                         roomUI.setTitle(roomNumber);
                         roomUI.setVisible(true);
-                        System.out.println("입장");
+//                        System.out.println("입장");
 
                 } else if (o == room_ButtonList[1]) {
                     roomNumber = room_ButtonList[1].getText().substring(0, 1);
 
 
-                    pw = new PrintWriter(client.getSocket().getOutputStream());
                     pw.println(roomNumber);
                     pw.println(roomNumber+"번 방 입장");
                     pw.flush();
 
                     this.setVisible(false);
+                    setDefault_Chat();
                     roomUI.setTitle(roomNumber);
                     roomUI.setVisible(true);
 
-                    System.out.println("입장");
+//                    System.out.println("입장");
 
                 } else if(o == room_ButtonList[2]){
                     roomNumber = room_ButtonList[2].getText().substring(0, 1);
 
 
-                    pw = new PrintWriter(client.getSocket().getOutputStream());
                     pw.println(roomNumber);
                     pw.println(roomNumber+"번 방 입장");
                     pw.flush();
 
                     this.setVisible(false);
+                    setDefault_Chat();
                     roomUI.setTitle(roomNumber);
                     roomUI.setVisible(true);
 
-                    System.out.println("입장");
+//                    System.out.println("입장");
 
                 } else if(o == room_ButtonList[3]){
                     roomNumber = room_ButtonList[3].getText().substring(0, 1);
 
 
-                    pw = new PrintWriter(client.getSocket().getOutputStream());
                     pw.println(roomNumber);
                     pw.println(roomNumber+"번 방 입장");
                     pw.flush();
 
                     this.setVisible(false);
+                    setDefault_Chat();
                     roomUI.setTitle(roomNumber);
                     roomUI.setVisible(true);
 
-                    System.out.println("입장");
+//                    System.out.println("입장");
 
                 }else if(o == room_ButtonList[4]){
                     roomNumber = room_ButtonList[4].getText().substring(0, 1);
 
 
-                    pw = new PrintWriter(client.getSocket().getOutputStream());
                     pw.println(roomNumber);
                     pw.println(roomNumber+"번 방 입장");
                     pw.flush();
 
                     this.setVisible(false);
+                    setDefault_Chat();
                     roomUI.setTitle(roomNumber);
                     roomUI.setVisible(true);
 
-                    System.out.println("입장");
+//                    System.out.println("입장");
 
                 }else if(o == room_ButtonList[5]){
                     roomNumber = room_ButtonList[5].getText().substring(0, 1);
 
 
-                    pw = new PrintWriter(client.getSocket().getOutputStream());
                     pw.println(roomNumber);
                     pw.println(roomNumber+"번 방 입장");
                     pw.flush();
 
                     this.setVisible(false);
+                    setDefault_Chat();
                     roomUI.setTitle(roomNumber);
                     roomUI.setVisible(true);
 ;
-                    System.out.println("입장");
+//                    System.out.println("입장");
 
                 }else if(o == room_ButtonList[6]){
                     roomNumber = room_ButtonList[6].getText().substring(0, 1);
 
 
-                    pw = new PrintWriter(client.getSocket().getOutputStream());
                     pw.println(roomNumber);
                     pw.println(roomNumber+"번 방 입장");
                     pw.flush();
 
                     this.setVisible(false);
+                    setDefault_Chat();
                     roomUI.setTitle(roomNumber);
                     roomUI.setVisible(true);
 
-                    System.out.println("입장");
+//                    System.out.println("입장");
 
                 }else if(o == room_ButtonList[7]){
                     roomNumber = room_ButtonList[7].getText().substring(0, 1);
 
 
-                    pw = new PrintWriter(client.getSocket().getOutputStream());
                     pw.println(roomNumber);
                     pw.println(roomNumber+"번 방 입장");
                     pw.flush();
 
                     this.setVisible(false);
+                    setDefault_Chat();
                     roomUI.setTitle(roomNumber);
                     roomUI.setVisible(true);
 
-                    System.out.println("입장");
+//                    System.out.println("입장");
 
                 }else if(o == room_ButtonList[8]){
                     roomNumber = room_ButtonList[8].getText().substring(0, 1);
 
 
-                    pw = new PrintWriter(client.getSocket().getOutputStream());
                     pw.println(roomNumber);
                     pw.println(roomNumber+"번 방 입장");
                     pw.flush();
 
                     this.setVisible(false);
+                    setDefault_Chat();
                     roomUI.setTitle(roomNumber);
                     roomUI.setVisible(true);
 
-                    System.out.println("입장");
+//                    System.out.println("입장");
 
                 }else if(o == room_ButtonList[9]){
                     roomNumber = room_ButtonList[9].getText().substring(0, 1);
 
 
-                    pw = new PrintWriter(client.getSocket().getOutputStream());
                     pw.println(roomNumber);
                     pw.println(roomNumber+"번 방 입장");
                     pw.flush();
 
                     this.setVisible(false);
+                    setDefault_Chat();
                     roomUI.setTitle(roomNumber);
                     roomUI.setVisible(true);
 
-                    System.out.println("입장");
+//                    System.out.println("입장");
 
                 }else{}
 
@@ -314,9 +341,21 @@ public class WaitingUI extends JFrame implements UI, ActionListener, KeyListener
     public void keyPressed(KeyEvent e) {
         if(e.getKeyCode()==KeyEvent.VK_ENTER){
             if(!chat_TextField.getText().equals("")) {
-                chat_TextArea.append(chat_TextField.getText() + "\n");
-                System.out.println(chat_TextField.getText());
-                System.out.println("채팅 입력 & 소켓 전송");
+                String text = chat_TextField.getText();
+                //나한테 붙이기
+                append("["+client.getName()+"] "+ text);
+                System.out.println(text);
+                try{
+
+                    //Type.CHAT = 11
+                    pw.println("11");
+                    pw.println(text);
+                    pw.flush();
+
+                }catch (Exception e2){
+                    e2.printStackTrace();
+                }
+//                System.out.println("채팅 입력 & 소켓 전송");
                 chat_TextField.setText("");
             }
         }
@@ -345,6 +384,14 @@ public class WaitingUI extends JFrame implements UI, ActionListener, KeyListener
 
     public void mouseExited(MouseEvent e) {
 
+    }
+
+    public void append(String text){
+        chat_TextArea.append("\n"+text);
+    }
+
+    public void setDefault_Chat(){
+        chat_TextArea.setText("환영합니다");
     }
 
     //body end

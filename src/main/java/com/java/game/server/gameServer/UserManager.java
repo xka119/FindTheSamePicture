@@ -39,9 +39,13 @@ public class UserManager extends Thread {
                     //Type.CHAT
                     case 11:
                         //텍스트에 욕이 있으면 필터링을 하자.
-                        text = ServerUtility.filterText(text);
+//                        System.out.println(text+"<< 받았습니다");
+
+                        //필터링 잠시 stop
+//                        text = ServerUtility.filterText(text);
                         //모두에게 뿌리고
                         ServerUtility.sendtoAll(text, nick_name, this.user);
+//                        System.out.println("text 보냈습니다");
                         break;
                     //Type.GAME
                     case 12:
@@ -50,7 +54,7 @@ public class UserManager extends Thread {
                     //Type.EXIT
                     case 13:
                         //나가는 로그 전달
-                        user.setState(Type.EXIT);
+                        user.setState(Type.WAITING_ROOM);
                         ServerUtility.sendLog(text, user.getName());
                         break;
                     //Type.Room 1~9
@@ -58,7 +62,14 @@ public class UserManager extends Thread {
                         //로그서버에 입장 로그 전달
                         //user의 state를 그 번호로 변경
                         //room을 들어가는 번호를 입력했음
+                        //user 상태 - 방 번호에 따라서 세팅
                         user.setState(flag);
+
+                        //room 세팅 - 방 번호에 맞게 세팅 flag 1-9 match 0 -8
+                        GameServer.roomList.get(flag-1).add(user);
+//                        System.out.println(GameServer.roomList.get(flag-1).getRoomNumber()+"방 번호 입니다");
+                        text += "현재 위치: "+ user.getState();
+
                         ServerUtility.sendLog(text, user.getName());
                         break;
                 }

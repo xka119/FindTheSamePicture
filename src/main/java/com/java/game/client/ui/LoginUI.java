@@ -15,6 +15,7 @@ public class LoginUI extends JFrame implements UI, KeyListener, ActionListener{
 
     //UI
     private WaitingUI waitingUI;
+    private RoomUI roomUI;
 
     //panel
     private JPanel main_Panel;
@@ -55,70 +56,10 @@ public class LoginUI extends JFrame implements UI, KeyListener, ActionListener{
         name_TextField = new JTextField(9);
         name_TextField.setToolTipText("이름을 입력하세요(9자 이내)");
         name_TextField.addKeyListener(this);
-//
-//        name_TextField.addKeyListener(new KeyListener() {
-//            public void keyTyped(KeyEvent e) {
-//
-//            }
-//
-//            public void keyPressed(KeyEvent e) {
-//                if(e.getKeyCode()==KeyEvent.VK_ENTER){
-//                    if(name_TextField.getText().equals("")){
-//                        System.out.println("닉네임을 입력해주세요");
-//                    }else{
-//                        String name = name_TextField.getText();
-//                        System.out.println("name: "+name);
-//                        System.out.println("button Click");
-//
-//                        try {
-//                            client = new Client(name);
-//                            client.connect();
-//
-//                            client.threadStart();
-//                        } catch (Exception e1) {
-//                            e1.printStackTrace();
-//                        }
-//                        WaitingUI waitingUI = new WaitingUI(client);
-//                    }
-//                }
-//            }
-//
-//            public void keyReleased(KeyEvent e) {
-//
-//            }
-//        });
 
         start_Button = new JButton("접속");
         start_Button.addActionListener(this);
 
-//        start_Button.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                if(e.getSource()==start_Button){
-//                    if(name_TextField.getText().equals("")){
-//                        System.out.println("닉네임을 입력해주세요");
-//                    }else{
-//                        String name = name_TextField.getText();
-//                        System.out.println("name: "+name);
-//                        System.out.println("button Click");
-//
-//                        try {
-//                            client = new Client(name);
-//                            client.connect();
-////                            PrintWriter pw = new PrintWriter(client.getSocket().getOutputStream());
-////                            pw.println(name);
-////                            pw.flush();
-//                            client.threadStart();
-//                        } catch (Exception e1) {
-//                            e1.printStackTrace();
-//                        }
-//
-//                        System.out.println("Socket connection needed");
-////                        LoginUI.super.dispose();
-//                        WaitingUI waitingUI = new WaitingUI(client);
-//                    }
-//                }
-//            }
-//        });
         //Component add
         main_Panel.add(title_Label);
         main_Panel.add(connect_Pannel);
@@ -127,7 +68,6 @@ public class LoginUI extends JFrame implements UI, KeyListener, ActionListener{
         connect_Pannel.add(start_Button);
 
         container.add(main_Panel,BorderLayout.CENTER);
-
 
         //default Setting
         this.setTitle("같은그림찾기");
@@ -139,12 +79,6 @@ public class LoginUI extends JFrame implements UI, KeyListener, ActionListener{
 
 
     }
-
-
-
-
-
-
     public static void main(String[] args) throws Exception{
         LoginUI loginUI = new LoginUI();
         //start
@@ -163,14 +97,17 @@ public class LoginUI extends JFrame implements UI, KeyListener, ActionListener{
                 try {
                     client = new Client(name);
                     client.connect();
+                    this.setVisible(false); //걍 없애도 될꺼같은데.아에 로그인창 닫기 가능
+                    waitingUI = new WaitingUI(client);
+                    client.setWaitingUI(waitingUI);
+
                     client.threadStart();
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }
 
                 System.out.println("Socket connection needed");
-                this.setVisible(false);
-                WaitingUI waitingUI = new WaitingUI(client);
+
             }
         }
     }
@@ -185,19 +122,22 @@ public class LoginUI extends JFrame implements UI, KeyListener, ActionListener{
                 System.out.println("닉네임을 입력해주세요");
             }else{
                 String name = name_TextField.getText();
-                System.out.println("name: "+name);
-                System.out.println("button Click");
+                System.out.println("닉네임: "+name);
+//                System.out.println("button Click");
 
                 try {
                     client = new Client(name);
                     client.connect();
 
+                    this.setVisible(false);
+                    waitingUI = new WaitingUI(client);
+                    client.setWaitingUI(waitingUI);
                     client.threadStart();
+
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }
-                this.setVisible(false);
-                WaitingUI waitingUI = new WaitingUI(client);
+
             }
         }
 
@@ -206,5 +146,10 @@ public class LoginUI extends JFrame implements UI, KeyListener, ActionListener{
     public void keyReleased(KeyEvent e) {
 
     }
+
+    public void append(String text) {
+
+    }
+
     //body end
 }

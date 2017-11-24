@@ -12,7 +12,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-@Data
 public class Client {
 
     //UI
@@ -59,32 +58,42 @@ public class Client {
 //        name = br.readLine();
         pw.println(name);
         pw.flush();
-        System.out.println("Server Connected");
-
-
-        recvManager = new RecvManager(socket);
-        sendManager = new SendManager(socket);
-        System.out.println("Thread Start");
-
-
-
-
+//        System.out.println("Server Connected");
     }
-    public void threadStart(){
+
+    public void threadStart() throws Exception{
+        recvManager = new RecvManager(socket, loginUI, waitingUI, roomUI);
+//        sendManager = new SendManager(socket);
+//        System.out.println("Thread Start");
         recvManager.start();
-        sendManager.start();
+//        sendManager.start();
+    }
+
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public String getName() {
+        return name;
     }
 
 
-
-    public void enterRoom(){
-        state =0;
-        //룸 쓰레드를 생성은아니고..
-    }
     public void setName(String _name){
         name = _name;
     }
 
+    //UI setting method
+//    public static void setLoginUI(LoginUI _loginUI){
+//        loginUI = _loginUI;
+//    }
+//
+    public  void setWaitingUI(WaitingUI _waitingUI){
+        waitingUI = _waitingUI;
+    }
+
+    public void setRoomUI(RoomUI roomUI) {
+        this.roomUI = roomUI;
+    }
 
 
     public static void main(String[] args) throws Exception {
@@ -93,6 +102,7 @@ public class Client {
         client.threadStart();
 
     }
+
 
 
 }

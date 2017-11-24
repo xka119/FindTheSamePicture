@@ -10,6 +10,8 @@ public class Type {
     public static int EXIT = 13;
     public static int ETC = 14;
 
+    public static int REFRESH = 99;
+
 
 
     public static String LOG = "LOG";

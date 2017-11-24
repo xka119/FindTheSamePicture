@@ -1,7 +1,11 @@
 package com.java.game.client;
 
+import com.java.game.client.ui.LoginUI;
+import com.java.game.client.ui.RoomUI;
+import com.java.game.client.ui.WaitingUI;
 import com.java.game.common.Type;
 import lombok.Data;
+import org.apache.ibatis.logging.Log;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -9,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-@Data
 public class RecvManager extends Thread {
 
     private Socket socket;
@@ -18,10 +21,19 @@ public class RecvManager extends Thread {
     private String text;
     private int flag;
 
-    public RecvManager(Socket socket) throws IOException {
+    //ui
+    private LoginUI loginUI;
+    private RoomUI roomUI;
+    private WaitingUI waitingUI;
+
+    public RecvManager(Socket socket, LoginUI loginUI,  WaitingUI waitingUI, RoomUI roomUI) throws IOException {
         this.socket = socket;
+        this.loginUI = loginUI;
+        this.waitingUI = waitingUI;
+        this.roomUI = roomUI;
+
         br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        System.out.println("Client UserManager start");
+//        System.out.println("Client UserManager start");
     }
 
     @Override
@@ -34,14 +46,18 @@ public class RecvManager extends Thread {
          */
         text = "";
         try {
-            while(true){
-                flag = Integer.parseInt(br.readLine());
+            while (true) {
+                String x = br.readLine();
+                System.out.println(x);
+                flag = Integer.parseInt(x);
+//                flag = Integer.parseInt(br.readLine());
                 text = br.readLine();
 
-                switch (flag){
+                switch (flag) {
                     //Type.CHAT
                     case 11:
                         System.out.println(text);
+                        waitingUI.append(text);
                         break;
                     //Type.GAME
                     case 12:
@@ -51,7 +67,15 @@ public class RecvManager extends Thread {
                     case 13:
                         break;
 
+                    //Type.REFRESH
+                    case 99:
+                        break;
+
+                    //Type.Room 1~9
                     default:
+                        //room번호를 받으면
+                        roomUI.append(text);
+
                         break;
 
                 }
@@ -59,17 +83,10 @@ public class RecvManager extends Thread {
 //                    System.out.println(text);
 //                }
             }
-        }catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
-                //if문 stop
-//                if(text==null){
-//                    break;
-//                }else{
-//                    System.out.println(text);
-//                }
-//           }
     }
+
     //body end
 }

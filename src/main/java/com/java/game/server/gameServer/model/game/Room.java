@@ -24,16 +24,20 @@ public class Room {
 
 
     //userList가 0이면 생성하고 첫번쨰 user정하고 userList추가 그리고 첫번째 유저에게 첫번째 사람이라고 알려줌
-    public void add(User user){
+    public synchronized void add(User user){
         if(userList.size()==0){
             firstUser = user;
             userList.add(user);
         }else{
             userList.add(user);
         }
+
+        if(userList.size()==2){
+
+        }
     }
 
-    public void remove(User user){
+    public synchronized void remove(User user){
         userList.remove(user);
         if(userList.size()==0){
 

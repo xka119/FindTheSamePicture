@@ -1,5 +1,6 @@
 package com.java.game.client.ui;
 
+import com.java.game.Client;
 import com.java.game.common.Type;
 
 import javax.swing.*;
@@ -43,8 +44,10 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
 
 
 
-    public RoomUI(WaitingUI waitingUI){
+    public RoomUI(WaitingUI waitingUI) throws Exception{
         this.waitingUI = waitingUI;
+        this.pw = new PrintWriter(waitingUI.getClient().getSocket().getOutputStream());
+
     }
 
     public RoomUI(String room_Name){
@@ -92,7 +95,7 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
         gameImage = new JButton[SIZE];
         for(int i=0; i<SIZE; i++){
             gameImage[i] = new JButton(gameImageIcon[i]);
-//            gameImage[i].setVisible(false); /가리기
+            gameImage[i].setVisible(false); //가리기
             gameImage[i].addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                 }
@@ -103,7 +106,7 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
         game_info_TextArea.setBackground(new Color(127,127,127));
         game_info_Lable = new JLabel("game Infomation");
 
-        chat_TextArea = new JTextArea();
+        chat_TextArea = new JTextArea("환영합니다");
         chat_ScrollPane = new JScrollPane(chat_TextArea);
         chat_TextField = new JTextField("채팅을 입력하세요");
         chat_TextField.addMouseListener(this);
@@ -182,30 +185,9 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
 
         chat_TextArea = new JTextArea("채팅창");
         chat_TextField = new JTextField("채팅을 입력하세요");
-        chat_TextField.addKeyListener(new KeyListener() {
-            public void keyTyped(KeyEvent e) {
-
-            }
-
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode()==KeyEvent.VK_ENTER){
-                    System.out.println("채팅 입력 & 소켓 전송");
-                }
-
-            }
-
-            public void keyReleased(KeyEvent e) {
-
-            }
-        });
+        chat_TextField.addKeyListener(this);
         chat_send_Button = new JButton("전송");
-        chat_send_Button.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if(e.getSource()==chat_send_Button){
-                    System.out.println("채팅 입력 & 소켓 전송");
-                }
-            }
-        });
+        chat_send_Button.addActionListener(this);
 
         start_Button = new JButton("시작");
         start_Button.addActionListener(new ActionListener() {
@@ -218,15 +200,7 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
         });
 
         exit_Button = new JButton("나가기");
-        exit_Button.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if(e.getSource()==exit_Button){
-                    RoomUI.super.dispose();
-                    WaitingUI waitingUI = new WaitingUI();
-                    System.out.println("나가기");
-                }
-            }
-        });
+        exit_Button.addActionListener(this);
 
         //Component add
         for(int i=0; i<SIZE; i++){
@@ -267,7 +241,22 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
         Object o = e.getSource();
         if(o==chat_send_Button){
             if(!chat_TextField.getText().equals("")) {
-                chat_TextArea.append(chat_TextField.getText() + "\n");
+                String text = chat_TextField.getText();
+                //나한테 붙이기
+                append("["+waitingUI.getClient().getName()+"] "+ text+"\n");
+                System.out.println(text);
+
+                try{
+                    //Type.CHAT = 11
+//                    System.out.println("Room번호 "+room_Name);
+//                    pw.println(room_Name);
+                    pw.println("11");
+                    pw.println(text);
+                    pw.flush();
+
+                }catch (Exception e2){
+                    e2.printStackTrace();
+                }
                 chat_TextField.setText("");
                 System.out.println("채팅 입력 & 소켓 전송");
             }
@@ -279,14 +268,16 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
             this.setVisible(false);
             waitingUI.setVisible(true);
             try{
-                pw = new PrintWriter(waitingUI.getClient().getSocket().getOutputStream());
-                pw.println(com.java.game.common.Type.EXIT);
+                pw.println("13");
                 pw.println(this.getTitle()+"번 방 퇴장");
                 pw.flush();
+
+                setDefault_Chat();
+
             }catch (Exception e1){
                 e1.printStackTrace();
             }
-            System.out.println("나가기");
+//            System.out.println("나가기");
         }
 
     }
@@ -298,7 +289,22 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
     public void keyPressed(KeyEvent e) {
         if(e.getKeyCode()==KeyEvent.VK_ENTER){
             if(!chat_TextField.getText().equals("")) {
-                chat_TextArea.append(chat_TextField.getText() + "\n");
+                String text = chat_TextField.getText();
+                //나한테 붙이기
+                append("["+waitingUI.getClient().getName()+"] "+ text+"\n");
+                System.out.println(text);
+
+                try{
+
+                    //Type.CHAT = 11
+                    pw.println("11");
+                    pw.println(text);
+                    pw.flush();
+
+                }catch (Exception e2){
+                    e2.printStackTrace();
+                }
+
                 chat_TextField.setText("");
                 System.out.println("채팅 입력 & 소켓 전송");
             }
@@ -317,6 +323,14 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
     public void mouseEntered(MouseEvent e) {
     }
     public void mouseExited(MouseEvent e) {
+    }
+
+    public void append(String text){
+        chat_TextArea.append("\n"+text);
+    }
+
+    public void setDefault_Chat(){
+        chat_TextArea.setText("환영합니다");
     }
 
     //body end

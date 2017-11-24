@@ -46,16 +46,16 @@ public class GameServer{
         pw.println("게임 서버 연결");
         pw.flush();
 
-        System.out.println("로그 서버 연결");
+//        System.out.println("로그 서버 연결");
 
         // Manager Start
 //        serverUtility = new ServerUtility();
         // Room Setting
         this.setting_Room();
-        System.out.println("Room setting finished");
+//        System.out.println("Room setting finished");
 
         serverSocket = new ServerSocket(gameServer_Port);
-        System.out.println("게임서버 소켓 생성 ");
+//        System.out.println("게임서버 소켓 생성 ");
 
 
         //list 생성
@@ -65,15 +65,14 @@ public class GameServer{
 
     // socket connect
     public void connect() throws Exception{
-        System.out.println("GameServer wait");
+        System.out.println("게임서버 대기중");
         while(true) {
             clientSocket = serverSocket.accept();
 //            System.out.println("Client connected");
 
             //처음에 입장시 이름과 소켓을 입력한다.
             br = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            //flag 비우기
-//            br.readLine();
+
 
             //"userList added"
             String name = br.readLine();
@@ -98,15 +97,15 @@ public class GameServer{
         roomList = new ArrayList<Room>();
         for(int i=0; i<Common.ROOM_SIZE; i++){
             roomList.add(new Room(i+1));
-            System.out.println((i+1)+"번 방 생성");
+//            System.out.println((i+1)+"번 방 생성");
         }
     }
     //사람 추가
-    public static void addUser(User user){
+    public static synchronized void addUser(User user){
         userList.add(user);
     }
     //사람 삭제
-    public static void removeUser(User user){
+    public static synchronized void removeUser(User user){
         userList.remove(user);
     }
 

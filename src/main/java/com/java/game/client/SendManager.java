@@ -42,7 +42,6 @@ public class SendManager extends Thread {
             try {
                 //입력
                 text = br.readLine();
-//                System.out.println("text: " + text);
 
                 pw.println(Type.CHAT);
                 pw.println(text);
@@ -53,6 +52,8 @@ public class SendManager extends Thread {
             }
         }
     }
+
+
 
 
 }
