@@ -12,6 +12,7 @@ public class User {
 
     private int state;
     private int score;
+    private boolean start;
     private String answer1,answer2;
 
 
@@ -23,6 +24,7 @@ public class User {
         this.socket = socket;
         this.name = name;
         this.state = state;
+        this.start = false;
         //대기방인 경우
     }
 

@@ -114,7 +114,7 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
         chat_send_Button = new JButton("전송");
         chat_send_Button.addActionListener(this);
 
-        start_Button = new JButton("시작");
+        start_Button = new JButton("시작 대기중");
         start_Button.addActionListener(this);
 
         exit_Button = new JButton("나가기");
@@ -189,7 +189,7 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
         chat_send_Button = new JButton("전송");
         chat_send_Button.addActionListener(this);
 
-        start_Button = new JButton("시작");
+        start_Button = new JButton("시작 대기중");
         start_Button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(e.getSource()==start_Button){
@@ -243,7 +243,7 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
             if(!chat_TextField.getText().equals("")) {
                 String text = chat_TextField.getText();
                 //나한테 붙이기
-                append("["+waitingUI.getClient().getName()+"] "+ text+"\n");
+                append("["+waitingUI.getClient().getName()+"] "+ text);
                 System.out.println(text);
 
                 try{
@@ -263,13 +263,16 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
         }else if(o==start_Button){
             //Socket 메시지
             System.out.println("Game Start");
+            pw.println("14");
+            pw.println("게임시작");
+            pw.flush();
 
         }else if(o==exit_Button){
             this.setVisible(false);
             waitingUI.setVisible(true);
             try{
                 pw.println("13");
-                pw.println(this.getTitle()+"번 방 퇴장");
+                pw.println(this.getTitle().substring(0,4)+"에서 퇴장하셨습니다");
                 pw.flush();
 
                 setDefault_Chat();
@@ -291,7 +294,7 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
             if(!chat_TextField.getText().equals("")) {
                 String text = chat_TextField.getText();
                 //나한테 붙이기
-                append("["+waitingUI.getClient().getName()+"] "+ text+"\n");
+                append("["+waitingUI.getClient().getName()+"] "+ text);
                 System.out.println(text);
 
                 try{
@@ -332,6 +335,38 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
     public void setDefault_Chat(){
         chat_TextArea.setText("환영합니다");
     }
+
+    public void setStart_Button(int start){
+        if(start==1){
+            start_Button.setText("시작");
+            start_Button.setEnabled(true);
+        }
+        else if(start==2)
+            start_Button.setText("시작 대기중");
+        else if(start==3){
+            start_Button.setText("게임 진행 중");
+            start_Button.setEnabled(false);
+        }
+    }
+
+    public void setGameImage(boolean start){
+            for(int i=0; i<gameImage.length; i++){
+                if(start)
+                    gameImage[i].setVisible(true);
+                else
+                    gameImage[i].setVisible(false);
+
+            }
+
+    }
+
+    public void setExit_Button(boolean start){
+        if(start)
+            exit_Button.setEnabled(false);
+        else
+            exit_Button.setEnabled(true);
+    }
+
 
     //body end
 }

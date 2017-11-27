@@ -28,6 +28,7 @@ public class LogManager extends Thread {
         br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         logUI = new LogUI();
         logUI.init();
+//        logUI.setVisible(false);
     }
 
 
@@ -44,7 +45,7 @@ public class LogManager extends Thread {
                     time = simpleDateFormat.format(date);
                     //console log
                     String logText = "["+time+"]"+" "+text;
-                    System.out.println(logText);
+//                    System.out.println(logText);
 
                     //로그서버로 전달
                     logUI.addLog(logText);

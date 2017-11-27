@@ -100,6 +100,7 @@ public class LoginUI extends JFrame implements UI, KeyListener, ActionListener{
                     this.setVisible(false); //걍 없애도 될꺼같은데.아에 로그인창 닫기 가능
                     waitingUI = new WaitingUI(client);
                     client.setWaitingUI(waitingUI);
+                    client.setRoomUI(waitingUI.getRoomUI());
 
                     client.threadStart();
                 } catch (Exception e1) {

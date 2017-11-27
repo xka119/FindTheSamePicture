@@ -8,10 +8,18 @@ public class Type {
     public static int CHAT = 11;
     public static int GAME = 12;
     public static int EXIT = 13;
-    public static int ETC = 14;
+    public static int GAMESTART = 14;
 
-    public static int REFRESH = 99;
+    //Waiting 대표
+    public static int REPAINT = 99;
 
+    //GAME Setting
+    public static int SETTING = 15;
+
+
+    //waiting
+    public static String USERLIST = "USERLIST";
+    public static String ROOMLIST = "ROOMLIST";
 
 
     public static String LOG = "LOG";

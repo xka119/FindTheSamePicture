@@ -98,6 +98,7 @@ public class ServerUtility {
     public static synchronized void sendtoAll(String text, String name, User user) throws Exception {
         //유저 상태 확인
         int user_state = user.getState();
+        System.out.println("user_state: "+user_state);
         //유저 상태가 대기방이면
         if (user_state == Type.WAITING_ROOM) {
 //            System.out.println("step1");
@@ -112,6 +113,11 @@ public class ServerUtility {
                     String logText = text + " 현재 위치: "+ GameServer.userList.get(i).getState();
 //                    System.out.println(user.getName()+"의 로그: ");
                     sendLog(logText, name);
+                    pw = new PrintWriter(GameServer.userList.get(i).getSocket().getOutputStream());
+                    pw.println(Type.CHAT);
+//                    pw.println("[" + name + "]: " + text+"Echo 확인");
+                    pw.println("[" + name + "]: " + text);
+                    pw.flush();
 
                     //다른 사람의 상태가 대기실 -> msg
                 } else if (!GameServer.userList.get(i).getSocket().equals(user.getSocket())
@@ -126,29 +132,100 @@ public class ServerUtility {
         }else{
             //대기방이 아니라면 유저가 입장한 방 가져오기
             System.out.println(user.getName()+"의 현재 위치: "+ user_state);
+            //-1해줘야지 실제 room index가 된다
             Room room = GameServer.roomList.get(user_state-1);
-            System.out.println("step1");
+            //룸의 유저사이즈
             for(int i=0; i<room.getUserList().size(); i++){
 
-                //그 룸의 유저의 소켓과 같을떄는 로그만 찍기
+                //그 룸의 유저의 소켓과 같을 때는 로그만 찍기
                 if(room.getUserList().get(i).getSocket().equals(user.getSocket())){
-                    System.out.println("step2");
 
                     String logText = text + " 현재 위치: "+ room.getUserList().get(i).getState();
                     sendLog(logText, name);
-                }else{
-                    System.out.println("step3");
+                }else if(!room.getUserList().get(i).getSocket().equals(user.getSocket())
+                        && room.getUserList().get(i).getState() == user_state){
 
                     pw = new PrintWriter(room.getUserList().get(i).getSocket().getOutputStream());
                     //11.24 금요일 마지막작업 위치
                     //사람이 두명있을떄는 로그를 두번 찍네 왜그러지?
 //                    pw.println(user_state);
-                    pw.println(Type.CHAT);
+                    //채팅방의 번호로 타입을 보내주어야함
+                    pw.println(room.getUserList().get(i).getState());
                     pw.println("[" + name + "]: " + text);
                     pw.flush();
                 }
             }
         }
 
+    }
+
+
+    // 스타트 버튼 주는 것
+    public static void send_start_flag(User user) throws Exception {
+        pw = new PrintWriter(user.getSocket().getOutputStream());
+        pw.println(Type.SETTING);
+        //무시
+        pw.println("start button setting");
+        pw.flush();
+    }
+
+    public static void send_exit_room(User user) throws Exception{
+        Room room = GameServer.roomList.get(user.getState());
+        int size = room.getUserList().size();
+        if(size==1){
+            //본인만 있음
+            pw = new PrintWriter(user.getSocket().getOutputStream());
+            pw.println(Type.EXIT);
+            //무시
+            pw.println("exit room setting");
+            pw.flush();
+        }else{
+            for(int i=0; i<size; i++){
+                if(room.getUserList().get(i).getSocket().equals(user.getSocket())){
+                    //무시
+                }else{
+                    //다른사람인경우
+                    pw = new PrintWriter(room.getUserList().get(i).getSocket().getOutputStream());
+                    pw.println(Type.EXIT);
+                    pw.println("다른사람 나갓음..");
+                    pw.flush();
+                }
+            }
+        }
+
+    }
+
+    public static void send_game_start(User user) throws Exception{
+        Room room = GameServer.roomList.get(user.getState()-1);
+
+        //게임 시작 로그 보내기
+        String logText = room.getRoomNumber() + "번 방 게임 시작하였습니다.";
+        sendLog(logText);
+
+        for(int i=0; i<room.getUserList().size(); i++){
+            //그 룸의 모든 유저에게 메시지 보내기
+            pw = new PrintWriter(room.getUserList().get(i).getSocket().getOutputStream());
+            pw.println(Type.GAMESTART);
+            //무시
+            pw.println("Game Start");
+            pw.flush();
+        }
+
+    }
+
+    public synchronized static void send_user_List() throws Exception {
+        for(int i=0; i<GameServer.userList.size(); i++){
+            pw = new PrintWriter(GameServer.userList.get(i).getSocket().getOutputStream());
+            pw.println(Type.REPAINT);
+            pw.println(Type.USERLIST);
+            //사이즈 만큼 보낸다.
+            for(int j=0; j<GameServer.userList.size(); j++){
+                System.out.print(GameServer.userList.get(j).getName()+" ");
+                pw.println(GameServer.userList.get(j).getName()+" ");
+            }
+            System.out.println("");
+            pw.flush();
+
+        }
     }
 }

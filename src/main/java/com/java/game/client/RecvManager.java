@@ -20,21 +20,24 @@ public class RecvManager extends Thread {
 
     private String text;
     private int flag;
+    private String name;
 
     //ui
     private LoginUI loginUI;
     private RoomUI roomUI;
     private WaitingUI waitingUI;
 
-    public RecvManager(Socket socket, LoginUI loginUI,  WaitingUI waitingUI, RoomUI roomUI) throws IOException {
+    public RecvManager(Socket socket, WaitingUI waitingUI, RoomUI roomUI, String name) throws IOException {
         this.socket = socket;
         this.loginUI = loginUI;
         this.waitingUI = waitingUI;
         this.roomUI = roomUI;
+        this.name = name;
 
         br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 //        System.out.println("Client UserManager start");
     }
+
 
     @Override
     public void run() {
@@ -48,13 +51,16 @@ public class RecvManager extends Thread {
         try {
             while (true) {
                 String x = br.readLine();
-                System.out.println(x);
+                //flag 체크
+
+                System.out.println("서버로 부터 받은 flag"+x);
+
                 flag = Integer.parseInt(x);
 //                flag = Integer.parseInt(br.readLine());
                 text = br.readLine();
 
                 switch (flag) {
-                    //Type.CHAT
+                    //Type.CHAT - 대기방 채팅
                     case 11:
                         System.out.println(text);
                         waitingUI.append(text);
@@ -65,14 +71,48 @@ public class RecvManager extends Thread {
 
                     //Type.EXIT
                     case 13:
+                        roomUI.setStart_Button(1);
+                        roomUI.setGameImage(false);
+                        roomUI.setExit_Button(false);
+                        roomUI.repaint();
                         break;
 
-                    //Type.REFRESH
+                    //Type.GAMESTART
+                    case 14:
+                        roomUI.setStart_Button(3);
+                        //이미지셋팅
+                        roomUI.setGameImage(true);
+                        roomUI.setExit_Button(true);
+                        System.out.println("게임이 시작되었습니다.");
+                        roomUI.repaint();
+
+                    //Type.REPAINT
                     case 99:
+                        //waiting에서 화면을 바꾸는건데. 버튼하고 목록부분만 리프레쉬시켜야함.
+                        //버튼 먼저 내가들어갓으면
+                        if(text.equals(Type.USERLIST)){
+                            //일렬로 받는다
+                            String userList = br.readLine();
+                            String name[] = userList.split(" ");
+                            waitingUI.add_User_List(name);
+                            waitingUI.repaint_user_list();
+
+                        }else{
+
+                        }
+
+//                        waitingUI.add_User_List(name);
                         break;
 
-                    //Type.Room 1~9
+                    //Type.Setting
+                    case 15:
+                        roomUI.setStart_Button(1);
+                        roomUI.repaint();
+                        break;
+
+                    //Type.Room 1~9 //룸번호 채팅 진행
                     default:
+                        //room번호에 맞는 채팅을 진행하게함.
                         //room번호를 받으면
                         roomUI.append(text);
 

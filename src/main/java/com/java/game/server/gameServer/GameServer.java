@@ -45,17 +45,12 @@ public class GameServer{
         pw = new PrintWriter(logSocket.getOutputStream());
         pw.println("게임 서버 연결");
         pw.flush();
-
 //        System.out.println("로그 서버 연결");
 
-        // Manager Start
-//        serverUtility = new ServerUtility();
         // Room Setting
         this.setting_Room();
-//        System.out.println("Room setting finished");
 
         serverSocket = new ServerSocket(gameServer_Port);
-//        System.out.println("게임서버 소켓 생성 ");
 
 
         //list 생성
@@ -84,6 +79,7 @@ public class GameServer{
             pw = new PrintWriter(logSocket.getOutputStream());
             pw.println(name + "님이 접속하셨습니다.\n" + userList.size() + "명 접속중" );
             pw.flush();
+//            ServerUtility.send_user_List();
 
             System.out.println(name + "님이 접속하셨습니다");
             System.out.println(userList.size() +"명 접속중");

@@ -153,9 +153,10 @@ public class WaitingUI extends JFrame implements UI, ActionListener, KeyListener
     public void actionPerformed(ActionEvent e) {
         Object o = e.getSource();
         if(o==chat_send_Button){
+
             if(!chat_TextField.getText().equals("")) {
                 String text = chat_TextField.getText();
-                append("["+client.getName()+"] "+chat_TextField.getText() + "\n");
+//                append("["+client.getName()+"] "+chat_TextField.getText() + "\n");
                 System.out.println(text);
                 try{
 
@@ -169,163 +170,34 @@ public class WaitingUI extends JFrame implements UI, ActionListener, KeyListener
                 }
 
 //                System.out.println("채팅 입력 & 소켓 전송");
-
                 chat_TextField.setText("");
             }
         }else{
             //XX방 이름이 있겠지?
             String roomNumber;
+
             try {
                 if (o == room_ButtonList[0]) {
 //                    System.out.println(room_ButtonList[0].getText());
-                    roomNumber = room_ButtonList[0].getText().substring(0, 1);
-
-
-                        pw.println(roomNumber);
-                        pw.println(roomNumber+"번 방 입장");
-                        pw.flush();
-
-                        this.setVisible(false);
-                        setDefault_Chat();
-                        roomUI.setTitle(roomNumber);
-                        roomUI.setVisible(true);
-//                        System.out.println("입장");
-
+                    enterRoom(room_ButtonList[0].getText().substring(0, 1));
                 } else if (o == room_ButtonList[1]) {
-                    roomNumber = room_ButtonList[1].getText().substring(0, 1);
-
-
-                    pw.println(roomNumber);
-                    pw.println(roomNumber+"번 방 입장");
-                    pw.flush();
-
-                    this.setVisible(false);
-                    setDefault_Chat();
-                    roomUI.setTitle(roomNumber);
-                    roomUI.setVisible(true);
-
-//                    System.out.println("입장");
-
+                     enterRoom(room_ButtonList[1].getText().substring(0, 1));
                 } else if(o == room_ButtonList[2]){
-                    roomNumber = room_ButtonList[2].getText().substring(0, 1);
-
-
-                    pw.println(roomNumber);
-                    pw.println(roomNumber+"번 방 입장");
-                    pw.flush();
-
-                    this.setVisible(false);
-                    setDefault_Chat();
-                    roomUI.setTitle(roomNumber);
-                    roomUI.setVisible(true);
-
-//                    System.out.println("입장");
-
+                    enterRoom(room_ButtonList[2].getText().substring(0, 1));
                 } else if(o == room_ButtonList[3]){
-                    roomNumber = room_ButtonList[3].getText().substring(0, 1);
-
-
-                    pw.println(roomNumber);
-                    pw.println(roomNumber+"번 방 입장");
-                    pw.flush();
-
-                    this.setVisible(false);
-                    setDefault_Chat();
-                    roomUI.setTitle(roomNumber);
-                    roomUI.setVisible(true);
-
-//                    System.out.println("입장");
-
+                    enterRoom(room_ButtonList[3].getText().substring(0, 1));
                 }else if(o == room_ButtonList[4]){
-                    roomNumber = room_ButtonList[4].getText().substring(0, 1);
-
-
-                    pw.println(roomNumber);
-                    pw.println(roomNumber+"번 방 입장");
-                    pw.flush();
-
-                    this.setVisible(false);
-                    setDefault_Chat();
-                    roomUI.setTitle(roomNumber);
-                    roomUI.setVisible(true);
-
-//                    System.out.println("입장");
-
+                    enterRoom(room_ButtonList[4].getText().substring(0, 1));
                 }else if(o == room_ButtonList[5]){
-                    roomNumber = room_ButtonList[5].getText().substring(0, 1);
-
-
-                    pw.println(roomNumber);
-                    pw.println(roomNumber+"번 방 입장");
-                    pw.flush();
-
-                    this.setVisible(false);
-                    setDefault_Chat();
-                    roomUI.setTitle(roomNumber);
-                    roomUI.setVisible(true);
-;
-//                    System.out.println("입장");
-
+                    enterRoom(room_ButtonList[5].getText().substring(0, 1));
                 }else if(o == room_ButtonList[6]){
-                    roomNumber = room_ButtonList[6].getText().substring(0, 1);
-
-
-                    pw.println(roomNumber);
-                    pw.println(roomNumber+"번 방 입장");
-                    pw.flush();
-
-                    this.setVisible(false);
-                    setDefault_Chat();
-                    roomUI.setTitle(roomNumber);
-                    roomUI.setVisible(true);
-
-//                    System.out.println("입장");
-
+                    enterRoom(room_ButtonList[6].getText().substring(0, 1));
                 }else if(o == room_ButtonList[7]){
-                    roomNumber = room_ButtonList[7].getText().substring(0, 1);
-
-
-                    pw.println(roomNumber);
-                    pw.println(roomNumber+"번 방 입장");
-                    pw.flush();
-
-                    this.setVisible(false);
-                    setDefault_Chat();
-                    roomUI.setTitle(roomNumber);
-                    roomUI.setVisible(true);
-
-//                    System.out.println("입장");
-
+                    enterRoom(room_ButtonList[7].getText().substring(0, 1));
                 }else if(o == room_ButtonList[8]){
-                    roomNumber = room_ButtonList[8].getText().substring(0, 1);
-
-
-                    pw.println(roomNumber);
-                    pw.println(roomNumber+"번 방 입장");
-                    pw.flush();
-
-                    this.setVisible(false);
-                    setDefault_Chat();
-                    roomUI.setTitle(roomNumber);
-                    roomUI.setVisible(true);
-
-//                    System.out.println("입장");
-
+                    enterRoom(room_ButtonList[8].getText().substring(0, 1));
                 }else if(o == room_ButtonList[9]){
-                    roomNumber = room_ButtonList[9].getText().substring(0, 1);
-
-
-                    pw.println(roomNumber);
-                    pw.println(roomNumber+"번 방 입장");
-                    pw.flush();
-
-                    this.setVisible(false);
-                    setDefault_Chat();
-                    roomUI.setTitle(roomNumber);
-                    roomUI.setVisible(true);
-
-//                    System.out.println("입장");
-
+                    enterRoom(room_ButtonList[9].getText().substring(0, 1));
                 }else{}
 
             }catch(Exception e1){
@@ -343,7 +215,7 @@ public class WaitingUI extends JFrame implements UI, ActionListener, KeyListener
             if(!chat_TextField.getText().equals("")) {
                 String text = chat_TextField.getText();
                 //나한테 붙이기
-                append("["+client.getName()+"] "+ text);
+//                append("["+client.getName()+"] "+ text);
                 System.out.println(text);
                 try{
 
@@ -392,6 +264,28 @@ public class WaitingUI extends JFrame implements UI, ActionListener, KeyListener
 
     public void setDefault_Chat(){
         chat_TextArea.setText("환영합니다");
+    }
+
+    public void enterRoom(String roomNumber){
+        pw.println(roomNumber);
+        pw.println(roomNumber+"번 방에 입장에 하셨습니다");
+        pw.flush();
+
+        this.setVisible(false);
+        setDefault_Chat();
+        roomUI.setTitle(roomNumber+"번 방 ["+ client.getName()+"]");
+        roomUI.setVisible(true);
+        //                        System.out.println("입장");
+
+    }
+
+    public void add_User_List(String[] names){
+        for(String name : names)
+        user_list_TextArea.append("\n"+name);
+    }
+
+    public void repaint_user_list(){
+        user_list_TextArea.repaint();
     }
 
     //body end

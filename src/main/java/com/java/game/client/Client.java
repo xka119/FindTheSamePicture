@@ -33,15 +33,12 @@ public class Client {
     private static RecvManager recvManager;
     private static SendManager sendManager;
 
-    private static GameManager gameManager;
-
     // 필요한 것들은?
     private String name;
     private int state; //대기방= true, 방 = false
     private int score; // 점수
     private String answer1,answer2;
     private String flag; // flag - connect, chat, game, log, etc
-    // private 두개의 점수 맞출수 있는 신호 두개 필요함
 
 
     public Client(String _name) {
@@ -62,7 +59,7 @@ public class Client {
     }
 
     public void threadStart() throws Exception{
-        recvManager = new RecvManager(socket, loginUI, waitingUI, roomUI);
+        recvManager = new RecvManager(socket, waitingUI, roomUI, name);
 //        sendManager = new SendManager(socket);
 //        System.out.println("Thread Start");
         recvManager.start();
@@ -82,11 +79,7 @@ public class Client {
         name = _name;
     }
 
-    //UI setting method
-//    public static void setLoginUI(LoginUI _loginUI){
-//        loginUI = _loginUI;
-//    }
-//
+
     public  void setWaitingUI(WaitingUI _waitingUI){
         waitingUI = _waitingUI;
     }
@@ -97,9 +90,9 @@ public class Client {
 
 
     public static void main(String[] args) throws Exception {
-        Client client = new Client();
-        client.connect();
-        client.threadStart();
+//        Client client = new Client();
+//        client.connect();
+//        client.threadStart();
 
     }
 
