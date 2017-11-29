@@ -268,7 +268,7 @@ public class WaitingUI extends JFrame implements UI, ActionListener, KeyListener
 
     public void enterRoom(String roomNumber){
         pw.println(roomNumber);
-        pw.println(roomNumber+"번 방에 입장에 하셨습니다");
+        pw.println(roomNumber+"번 방에 입장하셨습니다");
         pw.flush();
 
         this.setVisible(false);

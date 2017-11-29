@@ -67,14 +67,26 @@ public class RecvManager extends Thread {
                         break;
                     //Type.GAME
                     case 12:
+                        System.out.println("게임: "+flag);
+                        System.out.println("눌린 이미지: "+text);
+                        //눌린 버튼의 화면을 repaint해주면됨
+                        roomUI.openImage(Integer.parseInt(text));
+                        roomUI.repaint();
+
                         break;
 
                     //Type.EXIT
                     case 13:
                         roomUI.setStart_Button(1);
+//                        roomUI.addChat_TextArea(text);
                         roomUI.setGameImage(false);
                         roomUI.setExit_Button(false);
                         roomUI.repaint();
+                        System.out.println("친구가 나가서 버튼 시작으로 바꾸는거야");
+//                        roomUI.setStart_Button(2);
+//                        roomUI.setGameImage(false);
+//                        roomUI.setExit_Button(false);
+//                        roomUI.repaint();
                         break;
 
                     //Type.GAMESTART
@@ -106,8 +118,16 @@ public class RecvManager extends Thread {
 
                     //Type.Setting
                     case 15:
-                        roomUI.setStart_Button(1);
-                        roomUI.repaint();
+                        if(text.equals("1")) {
+                            roomUI.setStart_Button(1);
+                            roomUI.repaint();
+
+                            System.out.println("시작");
+                        }else{
+                            roomUI.setStart_Button(2);
+                            roomUI.repaint();
+                            System.out.println("시작 대기중");
+                        }
                         break;
 
                     //Type.Room 1~9 //룸번호 채팅 진행

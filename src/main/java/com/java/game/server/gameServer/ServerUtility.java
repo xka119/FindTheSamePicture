@@ -161,35 +161,39 @@ public class ServerUtility {
 
 
     // 스타트 버튼 주는 것
-    public static void send_start_flag(User user) throws Exception {
+    public static void send_start_flag(User user, boolean check) throws Exception {
         pw = new PrintWriter(user.getSocket().getOutputStream());
         pw.println(Type.SETTING);
-        //무시
-        pw.println("start button setting");
+
+        //check true = 1 = enable, 2 = 시작대기중
+        if(check){
+            pw.println("1");
+        }else{
+            pw.println("2");
+        }
         pw.flush();
     }
 
     public static void send_exit_room(User user) throws Exception{
-        Room room = GameServer.roomList.get(user.getState());
+        //user의 room정보를 가져와서
+        //size ==1 이면 본인만 있다는 뜻이니까.본인에게 EXIT
+        /*
+        1. 일단 내가 나가면 그냥 나간거임
+        2. 다른 친구에게는 내가 나갔으니까 Setting을 1하게 하면됨
+         */
+        Room room = GameServer.roomList.get(user.getState()-1);
         int size = room.getUserList().size();
-        if(size==1){
-            //본인만 있음
-            pw = new PrintWriter(user.getSocket().getOutputStream());
-            pw.println(Type.EXIT);
-            //무시
-            pw.println("exit room setting");
-            pw.flush();
-        }else{
-            for(int i=0; i<size; i++){
-                if(room.getUserList().get(i).getSocket().equals(user.getSocket())){
-                    //무시
-                }else{
-                    //다른사람인경우
-                    pw = new PrintWriter(room.getUserList().get(i).getSocket().getOutputStream());
-                    pw.println(Type.EXIT);
-                    pw.println("다른사람 나갓음..");
-                    pw.flush();
-                }
+        for(int i=0; i<size; i++){
+            System.out.println(room.getUserList().get(i).getName()+"입니다");
+            if(room.getUserList().get(i).getSocket().equals(user.getSocket())){
+                //무시
+            }else{
+                //다른사람이면 셋팅을 바꿔줘야함
+                pw = new PrintWriter(room.getUserList().get(i).getSocket().getOutputStream());
+                pw.println(Type.EXIT);
+                //무시
+                pw.println(user.getName()+"님이 퇴장하셨습니다");
+                pw.flush();
             }
         }
 
@@ -228,4 +232,23 @@ public class ServerUtility {
 
         }
     }
+
+    public synchronized static void send_game_state(User user, String text) throws Exception {
+        Room room = GameServer.roomList.get(user.getState()-1);
+
+        //게임 시작 로그 보내기
+        String logText = "["+room.getRoomNumber() + "번 방]"+ user.getName()+"-> "+text+"선택하였습니다";
+        sendLog(logText);
+
+        for(int i=0; i<room.getUserList().size(); i++){
+            //그 룸의 나를 제외한 모든 유저에게 보내기
+            if(!room.getUserList().get(i).getSocket().equals(user.getSocket())) {
+                pw = new PrintWriter(room.getUserList().get(i).getSocket().getOutputStream());
+                pw.println(Type.GAME);
+                pw.println(text);
+                pw.flush();
+            }
+        }
+    }
+
 }

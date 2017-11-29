@@ -90,16 +90,15 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
         for(int i=0; i<SIZE/2; i++){
             gameImageIcon[i] = new ImageIcon("./image/"+String.valueOf(i)+".jpg");
             gameImageIcon[8+i] = new ImageIcon("./image/"+String.valueOf(i)+".jpg");
+//            System.out.println("게임이미지 이름?"+gameImageIcon[i].toString());
+            //절대주소 이름임
         }
 
         gameImage = new JButton[SIZE];
         for(int i=0; i<SIZE; i++){
             gameImage[i] = new JButton(gameImageIcon[i]);
             gameImage[i].setVisible(false); //가리기
-            gameImage[i].addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                }
-            });
+            gameImage[i].addActionListener(this);
         }
 
         game_info_TextArea = new JTextArea("Realtime Game Log");
@@ -239,6 +238,18 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
 
     public void actionPerformed(ActionEvent e) {
         Object o = e.getSource();
+        //그림에 관한부분
+        for(int i=0; i<SIZE; i++) {
+            if (o == gameImage[i]){
+                //그게 이미지라면
+                System.out.println(i+"번째 이미지클릭");
+                gameImage[i].setVisible(false);
+                pw.println("12");
+                pw.println(String.valueOf(i));
+                pw.flush();
+            }
+        }
+
         if(o==chat_send_Button){
             if(!chat_TextField.getText().equals("")) {
                 String text = chat_TextField.getText();
@@ -271,6 +282,7 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
             this.setVisible(false);
             waitingUI.setVisible(true);
             try{
+                //Type.EXIT
                 pw.println("13");
                 pw.println(this.getTitle().substring(0,4)+"에서 퇴장하셨습니다");
                 pw.flush();
@@ -340,22 +352,32 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
         if(start==1){
             start_Button.setText("시작");
             start_Button.setEnabled(true);
+//            start_Button.repaint();
         }
-        else if(start==2)
+        else if(start==2) {
             start_Button.setText("시작 대기중");
+            start_Button.setEnabled(true);
+//            start_Button.repaint();
+        }
         else if(start==3){
             start_Button.setText("게임 진행 중");
             start_Button.setEnabled(false);
+//            start_Button.repaint();
+
         }
     }
 
+    //게임 이미지 세팅 - test - true/false만 바꿔주면됨
     public void setGameImage(boolean start){
             for(int i=0; i<gameImage.length; i++){
-                if(start)
+                if(start) {
                     gameImage[i].setVisible(true);
-                else
+//                    gameImage[i].setEnabled(true);
+                }
+                else{
                     gameImage[i].setVisible(false);
-
+//                    gameImage[i].setEnabled(false);
+                }
             }
 
     }
@@ -365,6 +387,14 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
             exit_Button.setEnabled(false);
         else
             exit_Button.setEnabled(true);
+    }
+
+    public void openImage(int i){
+        gameImage[i].setVisible(false);
+    }
+
+    public void addChat_TextArea(String text){
+        chat_TextArea.append("\n"+ text );
     }
 
 

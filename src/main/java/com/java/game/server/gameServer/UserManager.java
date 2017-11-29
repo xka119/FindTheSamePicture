@@ -42,13 +42,18 @@ public class UserManager extends Thread {
 //                        System.out.println(text+"<< 받았습니다");
 
                         //필터링 잠시 stop
-                        text = ServerUtility.filterText(text);
+//                        text = ServerUtility.filterText(text);
+
+
                         //모두에게 뿌리고
                         ServerUtility.sendtoAll(text, nick_name, this.user);
 //                        System.out.println("text 보냈습니다");
                         break;
                     //Type.GAME
                     case 12:
+                        //이제 여기서
+                        System.out.println("눌른 이미지: "+text);
+                        ServerUtility.send_game_state(user,text);
                         break;
 
                     //Type.EXIT
@@ -58,14 +63,20 @@ public class UserManager extends Thread {
 //                        text += "현재 위치: "+ user.getState();
                         ServerUtility.sendLog(text, nick_name);
                         System.out.println(text);
+                        //친구들에 나갔음을 알려주기
+                        ServerUtility.send_exit_room(user);
+
+                        //룸에서 삭제
+                        GameServer.roomList.get(user.getState()-1).remove(user);
+                        System.out.println("룸에서 삭제함");
 
                         //상태 변경
                         user.setState(Type.WAITING_ROOM);
                         System.out.println("상태변경: 웨이팅룸");
 
-                        //룸에서 삭제
-                        GameServer.roomList.get(user.getState()).remove(user);
-                        System.out.println("룸에서 삭제함");
+
+
+                        //친구들에게 나갔다는 것을 에코 해주어야함.
                         break;
 
                     //TYpe.GAMESTART
@@ -80,15 +91,25 @@ public class UserManager extends Thread {
                         if(user.getState()==Type.WAITING_ROOM) {
                             user.setState(flag);
 
-                            //방번호에 추가를 하는데 그 룸에 사람이 없다면 그 user를 첫번째 사람으로 하고
-                            if(GameServer.roomList.get(flag-1).getUserList().size()==0){
-                                ServerUtility.send_start_flag(user);
-                                //서버유틸에서 sendStartflag하자
-                            }
-                            //그 사람에게 start버튼을 줌
                             //room 세팅 - 방 번호에 맞게 세팅 flag 1-9 match 0 -8
                             GameServer.roomList.get(flag - 1).add(user);
                             System.out.println(user.getName()+"님이 "+ flag+"번 방에 입장하셨습니다");
+
+                            //방번호에 추가를 하는데 그 룸에 사람이 없다면 그 user를 첫번째 사람으로 하고
+                            System.out.println("현재 방인원: "+ GameServer.roomList.get(flag-1).getUserList().size());
+                            if(GameServer.roomList.get(flag-1).getUserList().size()==1){
+                                ServerUtility.send_start_flag(user,true);
+                                //서버유틸에서 sendStartflag하자
+                            }else{
+                                //아니라면  flag를 false로 주자.
+                                ServerUtility.send_start_flag(user, false);
+//                                pw = new PrintWriter(GameServer.roomList.get(flag-1).getUserList().get(0).getSocket().getOutputStream());
+//                                pw.println()
+//                                pw.println(GameServer.roomList.get(flag-1).getUserList().get(0).getName()+"님이 입장하셨습니다");
+//                                pw.flush();
+                            }
+                            //그 사람에게 start버튼을 줌
+
 //                        System.out.println(GameServer.roomList.get(flag-1).getRoomNumber()+"방 번호 입니다");
 //                            text += "님이 " + user.getState();
 
@@ -112,6 +133,7 @@ public class UserManager extends Thread {
                 try {
                     ServerUtility.send_exit_room(user);
                     GameServer.removeUser(this.user);
+                    GameServer.roomList.get(user.getState()-1).remove(user);
                     text = user.getName()+"님이 종료하였습니다\n"+GameServer.userList.size()+ "명 접속중";
                     ServerUtility.sendLog(text);
 
