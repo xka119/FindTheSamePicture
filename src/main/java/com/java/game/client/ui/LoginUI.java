@@ -92,7 +92,6 @@ public class LoginUI extends JFrame implements UI, KeyListener, ActionListener{
             }else{
                 String name = name_TextField.getText();
                 System.out.println("name: "+name);
-                System.out.println("button Click");
 
                 try {
                     client = new Client(name);
@@ -107,7 +106,6 @@ public class LoginUI extends JFrame implements UI, KeyListener, ActionListener{
                     e1.printStackTrace();
                 }
 
-                System.out.println("Socket connection needed");
 
             }
         }

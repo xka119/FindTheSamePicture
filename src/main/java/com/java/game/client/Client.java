@@ -20,7 +20,7 @@ public class Client {
     RoomUI roomUI;
 
     //default
-    private Socket socket;
+    private static Socket socket;
     private String ip = Common.ip;
     private int port = Common.gameServer_port;
 
@@ -31,7 +31,6 @@ public class Client {
 
     //Manager
     private static RecvManager recvManager;
-    private static SendManager sendManager;
 
     // 필요한 것들은?
     private String name;

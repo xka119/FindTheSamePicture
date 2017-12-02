@@ -91,14 +91,34 @@ public class RecvManager extends Thread {
 
                     //Type.GAMESTART
                     case 14:
+
+                        //버튼상태는 모두 만들고
                         roomUI.setStart_Button(3);
+
+                        //시작이라면 방장에게 클릭할수잇게해줌
+//                        if(roomUI.getStart_Button().equals("시작")){
+//                            roomUI.setStart_Button(3);
+//                        }else{
+//                            roomUI.setGameImage_Enabled(false);
+//                            roomUI.setStart_Button(3);
+//                        }
+                        //게임 이미지 셋팅을 랜덤으로 해야함.
+                        System.out.println("이미지번호:"+ text);
+                        //
+                        roomUI.setGameImageRandom(text);
                         //이미지셋팅
-                        roomUI.setGameImage(true);
+//                        roomUI.setGameImage(true);
                         roomUI.setExit_Button(true);
                         System.out.println("게임이 시작되었습니다.");
                         roomUI.repaint();
+                        break;
+                    //Type.TURN
+                    case 16:
+                        //턴을 바꿔주기
 
-                    //Type.REPAINT
+                        break;
+
+                        //Type.REPAINT
                     case 99:
                         //waiting에서 화면을 바꾸는건데. 버튼하고 목록부분만 리프레쉬시켜야함.
                         //버튼 먼저 내가들어갓으면

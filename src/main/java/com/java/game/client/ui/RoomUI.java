@@ -1,12 +1,17 @@
 package com.java.game.client.ui;
 
 import com.java.game.Client;
+import com.java.game.client.ClientUtility;
+import com.java.game.client.model.Box;
 import com.java.game.common.Type;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 
 public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, MouseListener{
 
@@ -28,6 +33,7 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
     private JPanel button_Panel;
 
     //component
+    private ImageIcon defaultImage = new ImageIcon("./image/default.jpg");
     private JButton[] gameImage; //이건 생각해봐야함. 가칭
     private ImageIcon[] gameImageIcon;
     private JTextArea game_info_TextArea;
@@ -87,18 +93,15 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
 //        Component Setting
 
         gameImageIcon = new ImageIcon[SIZE];
-        for(int i=0; i<SIZE/2; i++){
-            gameImageIcon[i] = new ImageIcon("./image/"+String.valueOf(i)+".jpg");
-            gameImageIcon[8+i] = new ImageIcon("./image/"+String.valueOf(i)+".jpg");
-//            System.out.println("게임이미지 이름?"+gameImageIcon[i].toString());
-            //절대주소 이름임
-        }
-
         gameImage = new JButton[SIZE];
+
+        //default setting
         for(int i=0; i<SIZE; i++){
+ //절대주소 이름임
+            gameImageIcon[i] = new ImageIcon("./image/default.jpg");
+//            gameImage[i] = new JButton("이미지");
             gameImage[i] = new JButton(gameImageIcon[i]);
-            gameImage[i].setVisible(false); //가리기
-            gameImage[i].addActionListener(this);
+            gameImage[i].setVisible(false);
         }
 
         game_info_TextArea = new JTextArea("Realtime Game Log");
@@ -243,10 +246,58 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
             if (o == gameImage[i]){
                 //그게 이미지라면
                 System.out.println(i+"번째 이미지클릭");
-                gameImage[i].setVisible(false);
-                pw.println("12");
-                pw.println(String.valueOf(i));
-                pw.flush();
+                gameImage[i].setIcon(gameImageIcon[i]);
+//                System.out.println(gameImageIcon[i].toString());
+//                gameImage[i].setVisible(true);
+
+                Box box = ClientUtility.gameCheck(i, gameImageIcon[i].toString());
+                int size = box.size();
+                System.out.println(size);
+
+                switch (size){
+                    //한개만 클릭
+                    case 1:
+                        pw.println("12");
+                        pw.println(String.valueOf(i));
+                        pw.flush();
+                        break;
+
+                    //두개클릭인대 이경우는 없음 맞추면 3 틀리면 4
+                    case 2:
+                        break;
+
+                    case 3:
+                        //맞추면 안보이게 만들고 클릭 못하게함
+
+                        gameImage[box.getButtonNum(0)].setVisible(false);
+                        gameImage[box.getButtonNum(1)].setVisible(false);
+                        System.out.println("맞췄습니다");
+                        pw.println("12");
+                        pw.println(String.valueOf(i));
+                        pw.flush();
+                        break;
+
+                    case 4:
+                        //틀리면 안보이게만 함
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e1) {
+                            e1.printStackTrace();
+                        }
+//                        gameImage[box.getButtonNum(0)].setIcon(defaultImage);
+//                        gameImage[box.getButtonNum(1)].setIcon(defaultImage);
+                        System.out.println("틀렸습니다");
+
+                        pw.println("12");
+                        pw.println(String.valueOf(i));
+                        pw.flush();
+                        break;
+                    default:
+                        break;
+                }
+
+                //요게 트루면 -- 맞추었다는 뜻
+
             }
         }
 
@@ -273,7 +324,6 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
             }
         }else if(o==start_Button){
             //Socket 메시지
-            System.out.println("Game Start");
             pw.println("14");
             pw.println("게임시작");
             pw.flush();
@@ -356,7 +406,7 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
         }
         else if(start==2) {
             start_Button.setText("시작 대기중");
-            start_Button.setEnabled(true);
+            start_Button.setEnabled(false);
 //            start_Button.repaint();
         }
         else if(start==3){
@@ -367,19 +417,34 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
         }
     }
 
+    public String getStart_Button(){
+        return start_Button.getText();
+    }
+
     //게임 이미지 세팅 - test - true/false만 바꿔주면됨
     public void setGameImage(boolean start){
             for(int i=0; i<gameImage.length; i++){
                 if(start) {
-                    gameImage[i].setVisible(true);
+                    gameImage[i].setVisible(start);
 //                    gameImage[i].setEnabled(true);
                 }
                 else{
-                    gameImage[i].setVisible(false);
+                    gameImage[i].setVisible(start);
 //                    gameImage[i].setEnabled(false);
                 }
             }
 
+    }
+    public void setGameImage_Enabled(boolean start){
+        for(int i=0; i<gameImage.length; i++){
+            if (start) {
+                gameImage[i].setEnabled(start);
+                gameImage[i].setVisible(start);
+            }else{
+                gameImage[i].setEnabled(start);
+                gameImage[i].setVisible(start);
+            }
+        }
     }
 
     public void setExit_Button(boolean start){
@@ -390,11 +455,74 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
     }
 
     public void openImage(int i){
-        gameImage[i].setVisible(false);
+
+//        gameImage[i].setVisible(false);
+        gameImage[i].setIcon(gameImageIcon[i]);
+        //여기서 룸에서 해줫던거를 해줘야함.
+        Box box = ClientUtility.gameCheck(i, gameImageIcon[i].toString());
+        int size = box.size();
+        System.out.println(size);
+
+//        switch (size){
+//            //한개만 클릭
+//            case 1:
+//                pw.println("12");
+//                pw.println(String.valueOf(i));
+//                pw.flush();
+//                break;
+//
+//            //두개클릭인대 이경우는 없음 맞추면 3 틀리면 4
+//            case 2:
+//                break;
+//
+//            case 3:
+//                //맞추면 안보이게 만들고 클릭 못하게함
+//                gameImage[box.getButtonNum(0)].setVisible(false);
+//                gameImage[box.getButtonNum(0)].setEnabled(false);
+//                gameImage[box.getButtonNum(1)].setVisible(false);
+//                gameImage[box.getButtonNum(1)].setEnabled(false);
+//                System.out.println("맞췄습니다");
+//                pw.println("12");
+//                pw.println(String.valueOf(i));
+//                pw.flush();
+//                break;
+//
+//            case 4:
+//                //틀리면 안보이게만 함
+//                gameImage[box.getButtonNum(0)].setVisible(false);
+//                gameImage[box.getButtonNum(1)].setVisible(false);
+//                System.out.println("틀렸습니다");
+//
+//                pw.println("12");
+//                pw.println(String.valueOf(i));
+//                pw.flush();
+//                break;
+//            default:
+//                break;
+//        }
+
+
     }
 
     public void addChat_TextArea(String text){
         chat_TextArea.append("\n"+ text );
+    }
+
+
+    public void setGameImageRandom(String text) {
+        /*
+        이미지가 들어오면 이미지를 맞춰서 생성한다
+         */
+        for(int i=0; i<SIZE; i++){
+//            System.out.println("이미지: "+text.charAt(i)+" 번째 이미지 세팅 성공");
+            gameImageIcon[i] = new ImageIcon("./image/"+String.valueOf(text.charAt(i))+".jpg");
+//            gameImageIcon[i].setImage(new ImageIcon("./image/"+String.valueOf(text.charAt(i))+".jpg").getImage());
+//            System.out.println(gameImageIcon[i].toString());
+            gameImage[i].setVisible(true);
+            gameImage[i].addActionListener(this);
+        }
+//        System.out.println("repaint() start");
+        repaint();
     }
 
 

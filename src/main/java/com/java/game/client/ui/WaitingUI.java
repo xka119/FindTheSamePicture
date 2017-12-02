@@ -1,16 +1,11 @@
 package com.java.game.client.ui;
 
 import com.java.game.client.Client;
-import com.java.game.client.RecvManager;
-import com.java.game.client.SendManager;
-import com.java.game.common.Type;
 import lombok.Data;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.PrintWriter;
 
 @Data

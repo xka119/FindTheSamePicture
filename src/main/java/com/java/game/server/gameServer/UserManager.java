@@ -96,7 +96,7 @@ public class UserManager extends Thread {
                             System.out.println(user.getName()+"님이 "+ flag+"번 방에 입장하셨습니다");
 
                             //방번호에 추가를 하는데 그 룸에 사람이 없다면 그 user를 첫번째 사람으로 하고
-                            System.out.println("현재 방인원: "+ GameServer.roomList.get(flag-1).getUserList().size());
+                            System.out.println("현재 ["+ flag +"]번 방인원: "+ GameServer.roomList.get(flag-1).getUserList().size());
                             if(GameServer.roomList.get(flag-1).getUserList().size()==1){
                                 ServerUtility.send_start_flag(user,true);
                                 //서버유틸에서 sendStartflag하자
