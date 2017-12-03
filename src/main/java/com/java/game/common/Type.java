@@ -9,6 +9,7 @@ public class Type {
     public static int GAME = 12;
     public static int EXIT = 13;
     public static int GAMESTART = 14;
+    public static int TURN = 16;
 
     //Waiting 대표
     public static int REPAINT = 99;

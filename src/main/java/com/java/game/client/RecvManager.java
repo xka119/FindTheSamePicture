@@ -12,6 +12,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class RecvManager extends Thread {
 
@@ -21,6 +22,7 @@ public class RecvManager extends Thread {
     private String text;
     private int flag;
     private String name;
+    private ArrayList<String> buttonlist;
 
     //ui
     private LoginUI loginUI;
@@ -33,7 +35,7 @@ public class RecvManager extends Thread {
         this.waitingUI = waitingUI;
         this.roomUI = roomUI;
         this.name = name;
-
+        buttonlist = new ArrayList<>();
         br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 //        System.out.println("Client UserManager start");
     }
@@ -52,11 +54,8 @@ public class RecvManager extends Thread {
             while (true) {
                 String x = br.readLine();
                 //flag 체크
-
                 System.out.println("서버로 부터 받은 flag"+x);
-
                 flag = Integer.parseInt(x);
-//                flag = Integer.parseInt(br.readLine());
                 text = br.readLine();
 
                 switch (flag) {
@@ -67,9 +66,10 @@ public class RecvManager extends Thread {
                         break;
                     //Type.GAME
                     case 12:
-                        System.out.println("게임: "+flag);
+                        System.out.println("Type.GAME");
                         System.out.println("눌린 이미지: "+text);
                         //눌린 버튼의 화면을 repaint해주면됨
+                        buttonlist.add(text);
                         roomUI.openImage(Integer.parseInt(text));
                         roomUI.repaint();
 
@@ -77,6 +77,8 @@ public class RecvManager extends Thread {
 
                     //Type.EXIT
                     case 13:
+                        System.out.println("Type.EXIT");
+
                         roomUI.setStart_Button(1);
 //                        roomUI.addChat_TextArea(text);
                         roomUI.setGameImage(false);
@@ -91,6 +93,8 @@ public class RecvManager extends Thread {
 
                     //Type.GAMESTART
                     case 14:
+                        System.out.println("Type.GAMESTART");
+
 
                         //버튼상태는 모두 만들고
                         roomUI.setStart_Button(3);
@@ -114,8 +118,31 @@ public class RecvManager extends Thread {
                         break;
                     //Type.TURN
                     case 16:
-                        //턴을 바꿔주기
+                        String btn = br.readLine();
+                        System.out.println("Type.TURN");
 
+
+
+                        buttonlist.add(btn);
+                        roomUI.openImage(Integer.parseInt(btn));
+                        roomUI.repaint();
+                        System.out.println("읽었나?");
+
+                        Thread.sleep(1000);
+
+                        /*
+                        정답이라면 그 화면을 지워주면됨 아니라면 다시 원래대로
+                         */
+                        if(text.equals("true")){
+                            for(int i=0; i<buttonlist.size(); i++){
+                                roomUI.closeImage(Integer.parseInt(buttonlist.get(i)));
+                            }
+                        }else{
+                            for(int i=0; i<buttonlist.size(); i++) {
+                                roomUI.defaultImage(Integer.parseInt(buttonlist.get(i)));
+                            }
+                        }
+                        buttonlist = new ArrayList<>();
                         break;
 
                         //Type.REPAINT

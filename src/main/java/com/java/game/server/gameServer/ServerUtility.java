@@ -105,7 +105,7 @@ public class ServerUtility {
     public static synchronized void sendtoAll(String text, String name, User user) throws Exception {
         //유저 상태 확인
         int user_state = user.getState();
-        System.out.println("user_state: " + user_state);
+//        System.out.println("user_state: " + user_state);
         //유저 상태가 대기방이면
         if (user_state == Type.WAITING_ROOM) {
 //            System.out.println("step1");
@@ -138,7 +138,7 @@ public class ServerUtility {
             }
         } else {
             //대기방이 아니라면 유저가 입장한 방 가져오기
-            System.out.println(user.getName() + "의 현재 위치: " + user_state);
+//            System.out.println(user.getName() + "의 현재 위치: " + user_state);
             //-1해줘야지 실제 room index가 된다
             Room room = GameServer.roomList.get(user_state - 1);
             //룸의 유저사이즈
@@ -182,13 +182,8 @@ public class ServerUtility {
     }
 
     public static void send_exit_room(User user) throws Exception {
-        //user의 room정보를 가져와서
-        //size ==1 이면 본인만 있다는 뜻이니까.본인에게 EXIT
-        /*
-        1. 일단 내가 나가면 그냥 나간거임
-        2. 다른 친구에게는 내가 나갔으니까 Setting을 1하게 하면됨
-         */
         Room room = GameServer.roomList.get(user.getState() - 1);
+
         int size = room.getUserList().size();
         for (int i = 0; i < size; i++) {
             System.out.println(room.getUserList().get(i).getName() + "입니다");
@@ -242,25 +237,64 @@ public class ServerUtility {
         }
     }
 
-    public synchronized static void send_game_state(User user, String text) throws Exception {
+
+    //check = true 1번째 , false 2번쨰 정답을 맞춰야함.
+    public synchronized static void send_game_state(User user, String text, char imageNum, boolean check) throws Exception {
+        //룸정보를 얻고
         Room room = GameServer.roomList.get(user.getState() - 1);
+        room.addAnswer(text, imageNum);
 
         //게임 시작 로그 보내기
         String logText = "[" + room.getRoomNumber() + "번 방]" + user.getName() + "-> " + text + "선택하였습니다";
         sendLog(logText);
-
-        for (int i = 0; i < room.getUserList().size(); i++) {
-            //그 룸의 나를 제외한 모든 유저에게 보내기
-            if (!room.getUserList().get(i).getSocket().equals(user.getSocket())) {
-                System.out.println("상대방에게 보내는 부분입니다");
+        System.out.println("check: "+check);
+        //
+        //true 이면 1번쨰 보내는거
+        if(check) {
+            System.out.println("check true로 들어옵니다");
+            for (int i = 0; i < room.getUserList().size(); i++) {
+                //그 룸의 나를 제외한 모든 유저에게 보내기
+//                if (!room.getUserList().get(i).getSocket().equals(user.getSocket())) {
+                    System.out.println("상대방에게 보내는 부분입니다");
+                    pw = new PrintWriter(room.getUserList().get(i).getSocket().getOutputStream());
+                    pw.println(Type.GAME);
+                    pw.println(text);
+                    pw.flush();
+//                }
+            }
+        }else{
+            System.out.println("check false로 들어옵니다");
+            //Type.TURN 인 경우
+            boolean correct = room.makeAnswer();
+            if(correct){
+                logText = "[" + room.getRoomNumber() + "번 방]" + user.getName() + "님이 정답을 선택했습니다";
+            }else{
+                logText = "[" + room.getRoomNumber() + "번 방]" + user.getName() + "님이 정답이 아닙니다";
+            }
+            sendLog(logText);
+            for(int i=0; i< room.getUserList().size(); i++){
+                System.out.println("모든 유저에게 에코 중입니다.");
                 pw = new PrintWriter(room.getUserList().get(i).getSocket().getOutputStream());
-                pw.println(Type.GAME);
+                pw.println(Type.TURN);
+                pw.println(String.valueOf(correct));
                 pw.println(text);
                 pw.flush();
             }
-        }
-    }
 
+
+        }
+            //두번째니까 makeGame해야함
+            //correct를 보냄. 모두에게
+                //맞으면 모든 유저에게 에코
+                //턴으로 넘기는데
+
+
+
+
+            }
+
+
+    //랜덤으로 게임 셋팅
     public synchronized static String makeGame() {
 
         HashMap<Integer, Integer> maps = new HashMap<Integer, Integer>();
@@ -295,5 +329,6 @@ public class ServerUtility {
 //        System.out.println("S의 값: " + s);
         return s;
     }
+
 }
 

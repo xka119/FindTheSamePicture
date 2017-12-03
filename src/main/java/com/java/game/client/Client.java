@@ -65,7 +65,7 @@ public class Client {
 //        sendManager.start();
     }
 
-    public Socket getSocket() {
+    public static Socket getSocket() {
         return socket;
     }
 
@@ -86,6 +86,7 @@ public class Client {
     public void setRoomUI(RoomUI roomUI) {
         this.roomUI = roomUI;
     }
+
 
 
     public static void main(String[] args) throws Exception {

@@ -246,57 +246,14 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
             if (o == gameImage[i]){
                 //그게 이미지라면
                 System.out.println(i+"번째 이미지클릭");
-                gameImage[i].setIcon(gameImageIcon[i]);
-//                System.out.println(gameImageIcon[i].toString());
-//                gameImage[i].setVisible(true);
+//                gameImage[i].setIcon(gameImageIcon[i]);
 
-                Box box = ClientUtility.gameCheck(i, gameImageIcon[i].toString());
-                int size = box.size();
-                System.out.println(size);
-
-                switch (size){
-                    //한개만 클릭
-                    case 1:
-                        pw.println("12");
-                        pw.println(String.valueOf(i));
-                        pw.flush();
-                        break;
-
-                    //두개클릭인대 이경우는 없음 맞추면 3 틀리면 4
-                    case 2:
-                        break;
-
-                    case 3:
-                        //맞추면 안보이게 만들고 클릭 못하게함
-
-                        gameImage[box.getButtonNum(0)].setVisible(false);
-                        gameImage[box.getButtonNum(1)].setVisible(false);
-                        System.out.println("맞췄습니다");
-                        pw.println("12");
-                        pw.println(String.valueOf(i));
-                        pw.flush();
-                        break;
-
-                    case 4:
-                        //틀리면 안보이게만 함
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e1) {
-                            e1.printStackTrace();
-                        }
-//                        gameImage[box.getButtonNum(0)].setIcon(defaultImage);
-//                        gameImage[box.getButtonNum(1)].setIcon(defaultImage);
-                        System.out.println("틀렸습니다");
-
-                        pw.println("12");
-                        pw.println(String.valueOf(i));
-                        pw.flush();
-                        break;
-                    default:
-                        break;
+                // button num, image num
+                try {
+                    ClientUtility.send_game_state(i, gameImageIcon[i].toString());
+                } catch (Exception e1) {
+                    e1.printStackTrace();
                 }
-
-                //요게 트루면 -- 맞추었다는 뜻
 
             }
         }
@@ -455,59 +412,22 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
     }
 
     public void openImage(int i){
-
-//        gameImage[i].setVisible(false);
+        System.out.println("openImage");
         gameImage[i].setIcon(gameImageIcon[i]);
-        //여기서 룸에서 해줫던거를 해줘야함.
-        Box box = ClientUtility.gameCheck(i, gameImageIcon[i].toString());
-        int size = box.size();
-        System.out.println(size);
 
-//        switch (size){
-//            //한개만 클릭
-//            case 1:
-//                pw.println("12");
-//                pw.println(String.valueOf(i));
-//                pw.flush();
-//                break;
-//
-//            //두개클릭인대 이경우는 없음 맞추면 3 틀리면 4
-//            case 2:
-//                break;
-//
-//            case 3:
-//                //맞추면 안보이게 만들고 클릭 못하게함
-//                gameImage[box.getButtonNum(0)].setVisible(false);
-//                gameImage[box.getButtonNum(0)].setEnabled(false);
-//                gameImage[box.getButtonNum(1)].setVisible(false);
-//                gameImage[box.getButtonNum(1)].setEnabled(false);
-//                System.out.println("맞췄습니다");
-//                pw.println("12");
-//                pw.println(String.valueOf(i));
-//                pw.flush();
-//                break;
-//
-//            case 4:
-//                //틀리면 안보이게만 함
-//                gameImage[box.getButtonNum(0)].setVisible(false);
-//                gameImage[box.getButtonNum(1)].setVisible(false);
-//                System.out.println("틀렸습니다");
-//
-//                pw.println("12");
-//                pw.println(String.valueOf(i));
-//                pw.flush();
-//                break;
-//            default:
-//                break;
-//        }
+    }
 
+    public void closeImage(int i) {
+        gameImage[i].setVisible(false);
+    }
 
+    public void defaultImage(int i) {
+        gameImage[i].setIcon(defaultImage);
     }
 
     public void addChat_TextArea(String text){
         chat_TextArea.append("\n"+ text );
     }
-
 
     public void setGameImageRandom(String text) {
         /*
@@ -524,6 +444,8 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
 //        System.out.println("repaint() start");
         repaint();
     }
+
+
 
 
     //body end

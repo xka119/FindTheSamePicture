@@ -1,7 +1,9 @@
 package com.java.game.client;
 
 import com.java.game.client.model.Box;
+import com.java.game.common.Type;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -9,6 +11,9 @@ import java.util.Iterator;
 public class ClientUtility {
 
     private static final int CHOICE = 2;
+    private static PrintWriter pw;
+
+    private static int count = 0;
 
     static Box box = new Box();
 
@@ -42,6 +47,33 @@ public class ClientUtility {
         }
 
         return box;
+    }
+
+    public static void send_game_state(int i, String s) throws Exception {
+        //count 증가 1인경우에는 GAME메세지를 보냄
+        count++;
+        System.out.println("Count: "+count);
+        char imageNum = s.charAt(8);
+        pw = new PrintWriter(Client.getSocket().getOutputStream());
+        if(count==1){
+            System.out.println("보낸 타입 : GAME");
+            pw.println(Type.GAME);
+            pw.println(String.valueOf(i));
+            pw.println(imageNum);
+            pw.flush();
+        }else{
+            System.out.println("보낸 타입 : TURN");
+            pw.println(Type.TURN);
+            // string 형으ㅏ로 변환해서
+            pw.println(String.valueOf(i));
+            // char
+            pw.println(imageNum);
+            pw.flush();
+            //초기화
+            count = 0;
+        }
+
+
     }
 
     //body end
