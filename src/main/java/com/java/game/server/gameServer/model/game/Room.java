@@ -11,6 +11,7 @@ public class Room {
     private ArrayList<User> userList;
     private boolean full;
     private boolean start;
+    private int count;
     private ArrayList<String> buttonlist;
     private ArrayList<Character> answerlist;
 
@@ -22,8 +23,19 @@ public class Room {
         userList = new ArrayList<User>();
         buttonlist = new ArrayList<>();
         answerlist = new ArrayList<>();
-        this.start = false;
+        count = 0;
         this.full = false;
+    }
+
+    public void addCount(){
+        count++;
+    }
+
+    public int getCount(){
+        return count;
+    }
+    public void setDefaultCount(){
+        count = 0;
     }
 
     public boolean makeAnswer(){

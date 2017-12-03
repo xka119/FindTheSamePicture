@@ -11,6 +11,9 @@ public class Type {
     public static int GAMESTART = 14;
     public static int TURN = 16;
 
+    public static int ENABLESTART = 17;
+    public static int ENTER = 18;
+
     //Waiting 대표
     public static int REPAINT = 99;
 
@@ -27,13 +30,4 @@ public class Type {
 
 
     public static final int WAITING_ROOM = 0;
-    public static final int ROOM_1= 1;
-    public static final int ROOM_2= 2;
-    public static final int ROOM_3= 3;
-    public static final int ROOM_4= 4;
-    public static final int ROOM_5= 5;
-    public static final int ROOM_6= 6;
-    public static final int ROOM_7= 7;
-    public static final int ROOM_8= 8;
-    public static final int ROOM_9= 9;
 }

@@ -60,7 +60,6 @@ public class WaitingUI extends JFrame implements UI, ActionListener, KeyListener
         //default Layout
         this.setLayout(new GridLayout(2,1));
 
-
         //Panel Setting
         info_Panel1 = new JPanel();
         info_Panel1.setLayout(new BorderLayout());
@@ -79,15 +78,6 @@ public class WaitingUI extends JFrame implements UI, ActionListener, KeyListener
         for(int i=0; i<ROOM_SIZE; i++){
             room_ButtonList[i] = new JButton((i+1)+"번 방"); //뒤에 텍스트는 클릭시 listener 구현필요
             room_ButtonList[i].addActionListener(this);
-            //   roomUI_List[i] = new RoomUI(room_ButtonList[i].getName()); //created
-//            room_ButtonList[i].addActionListener(new ActionListener() {
-//                public void actionPerformed(ActionEvent e) {
-//                    WaitingUI.super.dispose();
-//                    RoomUI roomUI = new RoomUI();
-//                    System.out.println("입장");
-//
-//                }
-//            });
         }
 
         user_Label = new JLabel("접속자 목록");
@@ -104,7 +94,7 @@ public class WaitingUI extends JFrame implements UI, ActionListener, KeyListener
 
         //Component add
         info_Panel1.add(room_Panel, BorderLayout.CENTER);
-        info_Panel1.add(user_Panel, BorderLayout.EAST);
+//        info_Panel1.add(user_Panel, BorderLayout.EAST);
         for(int i=0; i<ROOM_SIZE; i++){
             room_Panel.add(room_ButtonList[i]);
         }
@@ -151,7 +141,6 @@ public class WaitingUI extends JFrame implements UI, ActionListener, KeyListener
 
             if(!chat_TextField.getText().equals("")) {
                 String text = chat_TextField.getText();
-//                append("["+client.getName()+"] "+chat_TextField.getText() + "\n");
                 System.out.println(text);
                 try{
 
@@ -164,7 +153,6 @@ public class WaitingUI extends JFrame implements UI, ActionListener, KeyListener
                     e2.printStackTrace();
                 }
 
-//                System.out.println("채팅 입력 & 소켓 전송");
                 chat_TextField.setText("");
             }
         }else{
@@ -173,7 +161,6 @@ public class WaitingUI extends JFrame implements UI, ActionListener, KeyListener
 
             try {
                 if (o == room_ButtonList[0]) {
-//                    System.out.println(room_ButtonList[0].getText());
                     enterRoom(room_ButtonList[0].getText().substring(0, 1));
                 } else if (o == room_ButtonList[1]) {
                      enterRoom(room_ButtonList[1].getText().substring(0, 1));

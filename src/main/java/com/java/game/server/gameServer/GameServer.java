@@ -77,12 +77,12 @@ public class GameServer{
             userManager.start();
 
             pw = new PrintWriter(logSocket.getOutputStream());
-            pw.println(name + "님이 접속하셨습니다.\n" + userList.size() + "명 접속중" );
+            pw.println("["+name + "]님이 접속하셨습니다.\n" + userList.size() + "명 접속중" );
             pw.flush();
+
+            ServerUtility.send_user_List(user);
 //            ServerUtility.send_user_List();
 
-            System.out.println(name + "님이 접속하셨습니다");
-            System.out.println(userList.size() +"명 접속중");
 
 
         }

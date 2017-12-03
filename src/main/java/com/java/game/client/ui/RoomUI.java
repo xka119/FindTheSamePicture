@@ -31,6 +31,7 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
     private JPanel under_Panel;
     private JPanel chat_Panel;
     private JPanel button_Panel;
+    private JPanel chat_button_Panel;
 
     //component
     private ImageIcon defaultImage = new ImageIcon("./image/default.jpg");
@@ -78,17 +79,14 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
         etc_Panel = new JPanel();
         etc_Panel.setLayout(new GridLayout(2,1,10,10));
 
-        game_info_Panel = new JPanel();
-        game_info_Panel.setLayout(new GridLayout(1,2,10,10));
-
-        under_Panel = new JPanel();
-        under_Panel.setLayout(new GridLayout(1,2,10,10));
-
         chat_Panel = new JPanel();
-        chat_Panel.setLayout(new GridLayout(2,1,10,10));
+        chat_Panel.setLayout(new GridLayout(1,1,10,10));
+
+        chat_button_Panel = new JPanel();
+        chat_button_Panel.setLayout(new GridLayout(1, 2, 10, 10));
 
         button_Panel = new JPanel();
-        button_Panel.setLayout(new GridLayout(1,3));
+        button_Panel.setLayout(new GridLayout(1,3, 10, 10));
 
 //        Component Setting
 
@@ -126,18 +124,16 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
         for(int i=0; i<SIZE; i++){
             game_Panel.add(gameImage[i]);
         }
-        game_info_Panel.add(game_info_TextArea);
-        game_info_Panel.add(game_info_Lable);
+        etc_Panel.add(chat_Panel);
+        etc_Panel.add(chat_button_Panel);
 
-        etc_Panel.add(game_info_Panel);
-        etc_Panel.add(under_Panel);
-        under_Panel.add(chat_Panel);
-        under_Panel.add(button_Panel);
         chat_Panel.add(chat_ScrollPane);
-        chat_Panel.add(chat_TextField);
+        chat_button_Panel.add(chat_TextField);
+
         button_Panel.add(chat_send_Button);
         button_Panel.add(start_Button);
         button_Panel.add(exit_Button);
+        chat_button_Panel.add(button_Panel);
 
         container.add(game_Panel);
         container.add(etc_Panel);
@@ -277,7 +273,6 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
                     e2.printStackTrace();
                 }
                 chat_TextField.setText("");
-                System.out.println("채팅 입력 & 소켓 전송");
             }
         }else if(o==start_Button){
             //Socket 메시지
@@ -328,7 +323,6 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
                 }
 
                 chat_TextField.setText("");
-                System.out.println("채팅 입력 & 소켓 전송");
             }
         }
     }
@@ -358,7 +352,7 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
     public void setStart_Button(int start){
         if(start==1){
             start_Button.setText("시작");
-            start_Button.setEnabled(true);
+            start_Button.setEnabled(false);
 //            start_Button.repaint();
         }
         else if(start==2) {
@@ -434,18 +428,17 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
         이미지가 들어오면 이미지를 맞춰서 생성한다
          */
         for(int i=0; i<SIZE; i++){
-//            System.out.println("이미지: "+text.charAt(i)+" 번째 이미지 세팅 성공");
             gameImageIcon[i] = new ImageIcon("./image/"+String.valueOf(text.charAt(i))+".jpg");
-//            gameImageIcon[i].setImage(new ImageIcon("./image/"+String.valueOf(text.charAt(i))+".jpg").getImage());
 //            System.out.println(gameImageIcon[i].toString());
             gameImage[i].setVisible(true);
             gameImage[i].addActionListener(this);
         }
-//        System.out.println("repaint() start");
         repaint();
     }
 
-
+    public void enable_Start_button() {
+        start_Button.setEnabled(true);
+    }
 
 
     //body end
