@@ -408,7 +408,6 @@ public class RoomUI extends JFrame implements UI, ActionListener, KeyListener, M
     public void openImage(int i){
         System.out.println("openImage");
         gameImage[i].setIcon(gameImageIcon[i]);
-
     }
 
     public void closeImage(int i) {

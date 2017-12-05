@@ -42,7 +42,7 @@ public class UserManager extends Thread {
 //                        System.out.println(text+"<< 받았습니다");
 
                         //필터링 잠시 stop
-//                        text = ServerUtility.filterText(text);
+                        text = ServerUtility.filterText(text);
 
 
                         //모두에게 뿌리고
@@ -150,9 +150,11 @@ public class UserManager extends Thread {
 
             }catch(Exception e){
                 try {
-//                    ServerUtility.send_exit_room(user);
+                    ServerUtility.send_exit_room(user);
                     GameServer.removeUser(this.user);
-//                    GameServer.roomList.get(user.getState()-1).remove(user);
+                    if(!(user.getState()==Type.WAITING_ROOM)) {
+                        GameServer.roomList.get(user.getState() - 1).remove(user);
+                    }
                     text = user.getName()+"님이 종료하였습니다\n"+GameServer.userList.size()+ "명 접속중";
                     ServerUtility.sendLog(text);
 

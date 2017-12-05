@@ -7,6 +7,7 @@ import com.java.game.common.Type;
 import lombok.Data;
 import org.apache.ibatis.logging.Log;
 
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -80,19 +81,18 @@ public class RecvManager extends Thread {
                     //Type.EXIT
                     case 13:
                         System.out.println("Type.EXIT");
-
+                        if(text.equals("게임 끝")){
+                            JOptionPane.showMessageDialog(null, "게임 종료");
+                        }
                         roomUI.setStart_Button(1);
-//                        roomUI.addChat_TextArea(text);
-//                        for(int i=0; i<16; i++){
-//                            roomUI.defaultImage(i);
-//                        }
                         roomUI.setGameImage(false);
                         roomUI.setExit_Button(false);
 
                         roomUI.append(text);
                         roomUI.repaint();
-                        System.out.println("친구가 나가서 버튼 시작으로 바꾸는거야");
                         buttonlist = new ArrayList<>();
+
+
                         break;
 
                     //Type.GAMESTART

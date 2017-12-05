@@ -183,6 +183,9 @@ public class ServerUtility {
     }
 
     public static void send_exit_room(User user) throws Exception {
+        if(user.getState()==Type.WAITING_ROOM){
+            return;
+        }
         Room room = GameServer.roomList.get(user.getState() - 1);
 
         int size = room.getUserList().size();
